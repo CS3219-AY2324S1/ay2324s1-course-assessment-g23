@@ -6,6 +6,7 @@ import {
     updateQuestion,
     deleteQuestion,
     deleteAllQuestions,
+    Question,
 } from '../services/questionBank'
 
 /**
@@ -75,7 +76,22 @@ export function useQuestion(id: string) {
 export function useStoreQuestion() {
     const queryClient = useQueryClient()
     return useMutation(storeQuestion, {
-        onSuccess: () => {
+        onMutate: async (newQuestion) => {
+            // Based on:
+            // https://tanstack.com/query/v4/docs/react/guides/optimistic-updates#updating-a-list-of-todos-when-adding-a-new-todo
+            await queryClient.cancelQueries({ queryKey: ['question'] })
+            const previousQuestions = queryClient.getQueryData<Question[]>(['question'])!
+            const insertNewQuestion = (old: Question[] | undefined) => [
+                ...old!,
+                { question_id: '...', ...newQuestion },
+            ]
+            queryClient.setQueryData(['question'], insertNewQuestion)
+            return { previousQuestions }
+        },
+        onError: (err, newQuestion, context) => {
+            queryClient.setQueryData(['question'], context!.previousQuestions)
+        },
+        onSettled: () => {
             queryClient.invalidateQueries({ queryKey: ['question'] })
         },
     })
@@ -103,7 +119,22 @@ export function useStoreQuestion() {
 export function useUpdateQuestion() {
     const queryClient = useQueryClient()
     return useMutation(updateQuestion, {
-        onSuccess: () => {
+        onMutate: async (updatedQuestion) => {
+            // Based on:
+            // https://tanstack.com/query/v4/docs/react/guides/optimistic-updates#updating-a-list-of-todos-when-adding-a-new-todo
+            await queryClient.cancelQueries({ queryKey: ['question'] })
+            const previousQuestions = queryClient.getQueryData<Question[]>(['question'])!
+            const updateQuestionInList = (old: Question[] | undefined) =>
+                old!.map((q) =>
+                    q.question_id === updatedQuestion.question_id ? { ...q, ...updatedQuestion } : q
+                )
+            queryClient.setQueryData(['question'], updateQuestionInList)
+            return { previousQuestions }
+        },
+        onError: (err, updatedQuestion, context) => {
+            queryClient.setQueryData(['question'], context!.previousQuestions)
+        },
+        onSettled: () => {
             queryClient.invalidateQueries({ queryKey: ['question'] })
         },
     })
@@ -131,7 +162,20 @@ export function useUpdateQuestion() {
 export function useDeleteQuestion() {
     const queryClient = useQueryClient()
     return useMutation(deleteQuestion, {
-        onSuccess: () => {
+        onMutate: async (id: string) => {
+            // Based on:
+            // https://tanstack.com/query/v4/docs/react/guides/optimistic-updates#updating-a-list-of-todos-when-adding-a-new-todo
+            await queryClient.cancelQueries({ queryKey: ['question'] })
+            const previousQuestions = queryClient.getQueryData<Question[]>(['question'])!
+            const removeQuestionFromList = (old: Question[] | undefined) =>
+                old!.filter((q) => q.question_id !== id)
+            queryClient.setQueryData(['question'], removeQuestionFromList)
+            return { previousQuestions }
+        },
+        onError: (err, id, context) => {
+            queryClient.setQueryData(['question'], context!.previousQuestions)
+        },
+        onSettled: () => {
             queryClient.invalidateQueries({ queryKey: ['question'] })
         },
     })
@@ -159,7 +203,18 @@ export function useDeleteQuestion() {
 export function useDeleteAllQuestions() {
     const queryClient = useQueryClient()
     return useMutation(deleteAllQuestions, {
-        onSuccess: () => {
+        onMutate: async () => {
+            // Based on:
+            // https://tanstack.com/query/v4/docs/react/guides/optimistic-updates#updating-a-list-of-todos-when-adding-a-new-todo
+            await queryClient.cancelQueries({ queryKey: ['question'] })
+            const previousQuestions = queryClient.getQueryData<Question[]>(['question'])!
+            queryClient.setQueryData(['question'], [])
+            return { previousQuestions }
+        },
+        onError: (err, variables, context) => {
+            queryClient.setQueryData(['question'], context!.previousQuestions)
+        },
+        onSettled: () => {
             queryClient.invalidateQueries({ queryKey: ['question'] })
         },
     })

@@ -6,6 +6,7 @@ import {
     updateUser,
     deleteUser,
     deleteAllUsers,
+    User,
 } from '../services/users'
 
 /**
@@ -75,7 +76,22 @@ export function useUser(id: string) {
 export function useStoreUser() {
     const queryClient = useQueryClient()
     return useMutation(storeUser, {
-        onSuccess: () => {
+        onMutate: async (newUser) => {
+            // Based on:
+            // https://tanstack.com/query/v4/docs/react/guides/optimistic-updates#updating-a-list-of-todos-when-adding-a-new-todo
+            await queryClient.cancelQueries({ queryKey: ['user'] })
+            const previousUsers = queryClient.getQueryData<User[]>(['user'])!
+            const insertNewUser = (old: User[] | undefined) => [
+                ...old!,
+                { user_id: '...', ...newUser },
+            ]
+            queryClient.setQueryData(['user'], insertNewUser)
+            return { previousUsers }
+        },
+        onError: (err, newUser, context) => {
+            queryClient.setQueryData(['user'], context!.previousUsers)
+        },
+        onSettled: () => {
             queryClient.invalidateQueries({ queryKey: ['user'] })
         },
     })
@@ -103,7 +119,20 @@ export function useStoreUser() {
 export function useUpdateUser() {
     const queryClient = useQueryClient()
     return useMutation(updateUser, {
-        onSuccess: () => {
+        onMutate: async (updatedUser) => {
+            // Based on:
+            // https://tanstack.com/query/v4/docs/react/guides/optimistic-updates#updating-a-list-of-todos-when-adding-a-new-todo
+            await queryClient.cancelQueries({ queryKey: ['user'] })
+            const previousUsers = queryClient.getQueryData<User[]>(['user'])!
+            const updateUserInList = (old: User[] | undefined) =>
+                old!.map((u) => (u.user_id === updatedUser.user_id ? { ...u, ...updatedUser } : u))
+            queryClient.setQueryData(['user'], updateUserInList)
+            return { previousUsers }
+        },
+        onError: (err, updatedUser, context) => {
+            queryClient.setQueryData(['user'], context!.previousUsers)
+        },
+        onSettled: () => {
             queryClient.invalidateQueries({ queryKey: ['user'] })
         },
     })
@@ -131,7 +160,20 @@ export function useUpdateUser() {
 export function useDeleteUser() {
     const queryClient = useQueryClient()
     return useMutation(deleteUser, {
-        onSuccess: () => {
+        onMutate: async (id: string) => {
+            // Based on:
+            // https://tanstack.com/query/v4/docs/react/guides/optimistic-updates#updating-a-list-of-todos-when-adding-a-new-todo
+            await queryClient.cancelQueries({ queryKey: ['user'] })
+            const previousUsers = queryClient.getQueryData<User[]>(['user'])!
+            const removeUserFromList = (old: User[] | undefined) =>
+                old!.filter((u) => u.user_id !== id)
+            queryClient.setQueryData(['user'], removeUserFromList)
+            return { previousUsers }
+        },
+        onError: (err, id, context) => {
+            queryClient.setQueryData(['user'], context!.previousUsers)
+        },
+        onSettled: () => {
             queryClient.invalidateQueries({ queryKey: ['user'] })
         },
     })
@@ -159,7 +201,18 @@ export function useDeleteUser() {
 export function useDeleteAllUsers() {
     const queryClient = useQueryClient()
     return useMutation(deleteAllUsers, {
-        onSuccess: () => {
+        onMutate: async () => {
+            // Based on:
+            // https://tanstack.com/query/v4/docs/react/guides/optimistic-updates#updating-a-list-of-todos-when-adding-a-new-todo
+            await queryClient.cancelQueries({ queryKey: ['user'] })
+            const previousUsers = queryClient.getQueryData<User[]>(['user'])!
+            queryClient.setQueryData(['user'], [])
+            return { previousUsers }
+        },
+        onError: (err, variables, context) => {
+            queryClient.setQueryData(['user'], context!.previousUsers)
+        },
+        onSettled: () => {
             queryClient.invalidateQueries({ queryKey: ['user'] })
         },
     })
