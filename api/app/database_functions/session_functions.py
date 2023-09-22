@@ -1,6 +1,5 @@
 import hashlib
 from fastapi import HTTPException
-
 from .utils import users_util
 from .utils import sessions_util
 import database as db
@@ -13,12 +12,17 @@ def user_login(username: str, password: str):
     if login_result:
         user_id, role = login_result
         session_id = sessions_util.create_session(user_id, role)
+        creation_time, expiration_time = sessions_util.get_session_times(session_id)
         return {
-            'user_id': f'{user_id}',
-            'session_id': f'{session_id}',
-            'role': f'{role}',
+            'session_details': {
+                'user_id': f'{user_id}',
+                'session_id': f'{session_id}',
+                'role': f'{role}',
+                'creation_time': f'{creation_time}',
+                'expiration_time': f'{expiration_time}',
+            },
             'message': f'User {username} successfully logged in'
-        }   
+        }
     else:
         if users_util.username_exists(username):
             raise HTTPException(status_code=401, detail="Invalid password")
@@ -32,14 +36,11 @@ def get_session(session_id):
         sessions = [dict(zip(FIELD_NAMES, row)) for row in rows]
         return sessions
 
-    result = db.execute_sql_read_fetchone('SELECT * FROM sessions WHERE session_id = %s',
-                                 params=(session_id,))
+    result = db.execute_sql_read_fetchone('SELECT * FROM sessions WHERE session_id = %s', params=(session_id,))
 
-
-    if result != None and not sessions_util.is_expired_session(result):
-        return result
+    if result and not sessions_util.is_expired_session(result):
+        return dict(zip(FIELD_NAMES, result))
     else:
-        # raise HTTPException(status_code=401, detail="Unauthorized session")
         return None
 
 def user_logout(session_id):
@@ -48,5 +49,5 @@ def user_logout(session_id):
         return {
             'message': f'Session {session_id} successfully deleted'
         }
-    except e:
+    except Exception as e:
         raise HTTPException(status_code=401, detail=f"Unable to logout user: {e}")
