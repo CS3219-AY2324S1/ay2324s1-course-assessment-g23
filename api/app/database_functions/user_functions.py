@@ -34,7 +34,7 @@ def get_user(user_id, session_id):
     if not sessions_util.is_logged_in(session_id):
         raise HTTPException(status_code=401, detail='You are not logged in')
     
-    if not users_util.is_maintainer(session_id):
+    if not users_util.is_maintainer(session_id) and not users_util.is_account_owner(user_id, session_id):
         raise HTTPException(status_code=401, detail='You do not have access')
 
     if user_id != "all" and not users_util.uid_exists(user_id):
