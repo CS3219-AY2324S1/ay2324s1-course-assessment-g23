@@ -27,4 +27,8 @@ def is_maintainer(user_id):
     return db.execute_sql_read_fetchone("SELECT role FROM sessions WHERE session_id = %s", params=(user_id,))[0] == "maintainer"
 
 def is_account_owner(user_id, session_id):
-    return db.execute_sql_read_fetchone("SELECT user_id FROM sessions WHERE session_id = %s", params=(session_id,))[0] == user_id
+    result = db.execute_sql_read_fetchone("SELECT user_id FROM sessions WHERE session_id = %s", params=(session_id,))
+    if result is None:
+        # Handle the case where the session_id does not exist in the table.
+        return False
+    return result[0] == user_id
