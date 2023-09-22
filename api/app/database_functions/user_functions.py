@@ -45,8 +45,11 @@ def get_user(user_id, session_id):
         rows = db.execute_sql_read_fetchall(f"SELECT {', '.join(FIELD_NAMES)} FROM users")
         users = [dict(zip(FIELD_NAMES, row)) for row in rows]
         return users
-    return db.execute_sql_read_fetchone(f"SELECT {', '.join(FIELD_NAMES)} FROM users WHERE user_id = %s",
+
+    rows = db.execute_sql_read_fetchone(f"SELECT {', '.join(FIELD_NAMES)} FROM users WHERE user_id = %s",
                                         params=(user_id,))
+    user = dict(zip(FIELD_NAMES, rows))
+    return user
 
 def update_user_info(user_id, username, password, email, role, session_id):
     if not sessions_util.is_logged_in(session_id):
@@ -94,7 +97,7 @@ def update_user_role(user_id, role, session_id):
     if not sessions_util.is_logged_in(session_id):
         raise HTTPException(status_code=401, detail='You are not logged in')
 
-    curr_role = get_user(user_id, session_id)[4]
+    curr_role = get_user(user_id, session_id)['role']
     
     if not curr_role == role and not users_util.is_maintainer(session_id):
         raise HTTPException(status_code=401, detail='You do not have access')
