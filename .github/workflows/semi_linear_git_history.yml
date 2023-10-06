@@ -1,0 +1,41 @@
+name: Enforce Semi-Linear Git History
+
+on:
+  pull_request:
+    types:
+      - synchronize
+      - opened
+      - reopened
+
+jobs:
+  check-semi-linear:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
+        fetch-depth: 0 
+
+    - name: Check if PR branches off from target-branch's latest commit
+      run: |
+        # Get the target branch name
+        TARGET_BRANCH=$(gh pr view ${PR_NUMBER} --json baseRefName -q '.baseRefName')
+        echo "Target branch: ${TARGET_BRANCH}"
+
+        # Get the SHA of the latest commit on the target branch
+        LATEST_TARGET_COMMIT=$(git rev-parse origin/${TARGET_BRANCH})
+        echo "Latest target commit: ${LATEST_TARGET_COMMIT}"
+
+        # Get the SHA of the commit where the PR branch diverged
+        MERGE_BASE_COMMIT=$(git merge-base origin/${TARGET_BRANCH} HEAD)
+        echo "Merge base commit: ${MERGE_BASE_COMMIT}"
+
+        # Check if the divergent commit is the latest commit on the target branch
+        if [ "${MERGE_BASE_COMMIT}" != "${LATEST_TARGET_COMMIT}" ]; then
+          echo "Error: Your branch must be created from the latest commit on ${TARGET_BRANCH}."
+          exit 1
+        fi
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
