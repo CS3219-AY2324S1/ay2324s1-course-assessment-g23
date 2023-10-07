@@ -1,14 +1,10 @@
-from fastapi import FastAPI, HTTPException,  WebSocket
-import json
+from fastapi import FastAPI, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
-import threading
 
-from matching_util import User
-from queue_manager import queue, check_for_matches
+from .matchmaking import matchmake
+from .models import User
 
-# create app
 app = FastAPI()
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -17,26 +13,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app = FastAPI()
 
-@app.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket):
-
+@app.websocket("/ws/{user_id}")
+async def websocket_endpoint(websocket: WebSocket, user_id: str):
     await websocket.accept()
+    while True:
+        data = await websocket.receive_text()
+        user_data = User.parse_raw(data)
 
-    try:
-        # Receive message from client
-        message = await websocket.receive_text()
-
-        request =  json.loads(message)
-        detail = request["detail"]
-        user_id = detail["user_id"]
-
-        user = User(user_id, websocket)
-        queue.append(user)
-
-    except HTTPException as http_exc:
-        await websocket.send_text(http_exc.detail)
-
-matching_thread = threading.Thread(target=check_for_matches)
-matching_thread.start()
+        # Perform matchmaking
+        await matchmake(user_data, websocket)
