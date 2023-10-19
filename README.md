@@ -22,6 +22,18 @@
 
 ### Demo
 
+### Assignment - 1
+
+### Assignment - 2
+
+### Assignment - 3
+
+### Assignment - 4
+
+### Assignment - 5
+
+### Assignment - 6
+
 ## Requirements
 
 ### Functional Requirements
@@ -44,8 +56,25 @@ We're using the microservices architecture in this application. The services and
 
 ## API documentation
 
+### API gateway
+
 ## Database Schema
 
 ### Users Database
 
+#### users
+
+|user_id (key) | username | password | email | role |
+|-|-|-|-|-|
+
+#### sessions
+
+|session_id (key)|user_id|role|creation_time|expiration_time|
+|-|-|-|-|-|
+
 ### Questions Database
+
+### questions
+
+|question_id (key)|title|description|category|complexity|
+|-|-|-|-|-|
