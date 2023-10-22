@@ -3,7 +3,7 @@ from typing import TypedDict
 
 from fastapi import WebSocket
 
-
+@dataclass
 class UserWebSocket:
     """Representation of a user (with their corresponding websocket)."""
 

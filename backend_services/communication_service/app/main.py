@@ -1,4 +1,4 @@
-from data_classes import MessagePayload, Room
+from data_classes import MessagePayload, Room, UserWebSocket
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -29,7 +29,9 @@ async def join_communication_channel(websocket: WebSocket, room_id: str):
         rooms[room_id] = Room()
     room = rooms[room_id]
 
-    room.clients.append(websocket)
+    user_websocket = UserWebSocket(user_id="user_id", websocket=websocket)
+
+    room.clients.append(user_websocket)
 
     chat_messages = room.chat_room.get_messages_in_order()
     for sender_id, message in chat_messages:
@@ -49,7 +51,7 @@ async def join_communication_channel(websocket: WebSocket, room_id: str):
                 room.chat_room.add_message(sender_id=sender, message=message)
 
                 for client in room.clients:
-                    if client.websocket != websocket:
+                    if client.websocket != user_websocket.websocket:
                         await client.websocket.send_json({
                             "event": "receive-message",
                             "sender": sender,
