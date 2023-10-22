@@ -13,7 +13,7 @@ from api_models.users import UserLoginResponse
 from utils.api_permissions import Method
 import websockets.client
 from utils.api_gateway_util import has_permission, map_path_microservice_url, connect_matching_service_websocket
-from utils.addresses import MATCHING_SERVICE_HOST, COLLABORATION_SERVICE_HOST
+from utils.addresses import MATCHING_SERVICE_HOST, COLLABORATION_SERVICE_HOST, COMMUNICATION_SERVICE_HOST
 import websockets.exceptions
 
 app = FastAPI()
@@ -42,16 +42,20 @@ async def reverse_communication(ws_a: WebSocket, ws_b: websockets.client.WebSock
         assert isinstance(data, str)
         await ws_a.send_text(data)
 
+
 @app.websocket("/ws/{route:path}")
 async def websocket_endpoint(ws_a: WebSocket, route: str):
     matching_api_url = f"ws://{MATCHING_SERVICE_HOST}:8003/ws/matching"
     collaboration_api_url = f"ws://{COLLABORATION_SERVICE_HOST}:8000/ws/collab"
+    communication_api_url = f"ws://{COMMUNICATION_SERVICE_HOST}:8000/ws/communication"
 
     match route.split('/'):
-        case ["matching"]:
+        case["matching"]:
             requested_service = matching_api_url
-        case ["collab", room_id]:
+        case["collab", room_id]:
             requested_service = collaboration_api_url + f"/{room_id}"
+        case["communication", room_id]:
+            requested_service = communication_api_url + f"/{room_id}"
         case _:
             # If route doesn't match any service above, exit.
             return
