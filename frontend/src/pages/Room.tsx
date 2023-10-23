@@ -10,7 +10,7 @@ export const Room = () => {
     const handleExit = () => {
         setTimeout(() => {
             navigate('/questions')
-        }, 4000) // 4000 milliseconds (4 seconds) delay
+        }, 2000) // 2000 milliseconds (2 seconds) delay
     }
 
     return (
