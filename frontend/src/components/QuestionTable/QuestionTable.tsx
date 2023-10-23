@@ -84,7 +84,7 @@ export const QuestionTable: React.FC = () => {
                 <table className='question-table'>
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            <th id='id-header'>ID</th>
                             <th>Title</th>
                             <th>Category</th>
                             <th>Complexity</th>

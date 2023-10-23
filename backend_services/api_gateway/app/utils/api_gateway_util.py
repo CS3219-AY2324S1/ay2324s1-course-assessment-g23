@@ -1,5 +1,5 @@
 import httpx
-from fastapi import HTTPException, WebSocket
+from fastapi import HTTPException, Response, WebSocket
 from fastapi.responses import JSONResponse
 
 from api_models.users import UserLoginResponse, UserLogoutResponse
@@ -12,11 +12,12 @@ import websockets
 import json
 from typing import Literal, TypeAlias
 
-async def connect_matching_service_websocket(websocket: WebSocket, request):
-    websocket_url = f"{MATCHING_SERVICE_HOST}/{API_PORT}"
+async def connect_matching_service_websocket(websocket: WebSocket, message):
+    # websocket_url = "ws://{MATCHING_SERVICE_HOST}/{API_PORT}/ws/matching"
+    websocket_url = "ws://localhost:8003/ws/matching"
     async with websockets.connect(websocket_url) as matching_service_websocket:
-                await matching_service_websocket.send(json.dumps(request))
-                response = await matching_service_websocket.recv()
+                await matching_service_websocket.send(message)
+                response = await matching_service_websocket.receive_text()
                 await websocket.send_text(response)
                 websocket.close()
 
@@ -41,7 +42,7 @@ def map_path_microservice_url(path: str) -> tuple[Services, str]:
 def _map_role_permission(role: str) -> PermissionLevel:
     if role == "public":
         return PUBLIC_PERMISSION
-    elif role == "user":
+    elif role == "normal":
         return USER_PERMISSION
     elif role == "maintainer":
         return MAINTAINER_PERMISSION
@@ -51,15 +52,15 @@ def _get_service_path(path: str) -> str:
     tokens = path.split("/")
     return tokens[1]
 
-async def check_permission(session_id: str | None, path: str, method: Method) -> None:
+async def has_permission(session_id: str | None, path: str, method: Method) -> bool:
     service_path = _get_service_path(path)
     permission_required = PERMISSIONS_TABLE[service_path][method]
 
     if permission_required == PUBLIC_PERMISSION:
-        return
+        return True
 
     if session_id is None:
-        raise HTTPException(status_code=401, detail="Unauthorized access")
+        return False
 
     url = f"http://{SESSIONS_SERVICE_HOST}:{API_PORT}/sessions/{session_id}"
 
@@ -77,8 +78,7 @@ async def check_permission(session_id: str | None, path: str, method: Method) ->
 
         permission_level = _map_role_permission(session.role)
 
-        if permission_level < permission_required:
-            raise HTTPException(status_code=401, detail="Unauthorized access")
+        return permission_level >= permission_required
 
 
 def _check_access_to_supplied_id(session: GetSessionResponse, path: str, service: str):
@@ -92,14 +92,3 @@ def _check_access_to_supplied_id(session: GetSessionResponse, path: str, service
         session_user_id = session.user_id
         if supplied_id != session_user_id:
             raise HTTPException(status_code=401, detail="Unauthorized access")
-
-
-def attach_cookie(res: UserLoginResponse) -> JSONResponse:
-    output = JSONResponse(content=res.message)
-    output.set_cookie(key='session_id', value=res.session_id)
-    return output
-
-def delete_cookie(res: UserLogoutResponse) -> JSONResponse:
-    output = JSONResponse(content=res.message)
-    output.delete_cookie('session_id')
-    return output

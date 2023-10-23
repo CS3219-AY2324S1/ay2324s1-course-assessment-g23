@@ -34,9 +34,12 @@ export async function getSession(): Promise<SessionDetails | null> {
         credentials: 'include',
     })
 
+    // Stale session.
+    if (response.status === 401) return null
+
     if (!response.ok) throw await ApiError.parseResponse(response)
 
-    const data: SessionDetails | null = await response.json()
+    const data: SessionDetails = await response.json()
     return data
 }
 

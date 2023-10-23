@@ -3,6 +3,7 @@ from api_models.error import ServiceError
 from api_models.users import GetSessionResponse, UserLoginResponse, UserLogoutResponse
 from user_database import USER_DATABASE as db
 from utils import users_util, sessions_util
+from datetime import datetime
 
 def user_login(username: str, password: str) -> UserLoginResponse | ServiceError:
     hashed_password = hashlib.md5(password.encode()).hexdigest()
@@ -34,9 +35,14 @@ def get_session(session_id: str) -> GetSessionResponse | ServiceError:
     if result is None:
         return ServiceError(status_code=401, message='Unauthorized session')
 
-    expiration_time: str = result[4]
-    if sessions_util.is_expired_session(expiration_time):
-        return GetSessionResponse(**dict(zip(FIELD_NAMES, result)))
+    expiration_time = result[4]
+    assert isinstance(expiration_time, datetime), \
+        f"Expected `expiration_time` to be type `datetime`, got {type(expiration_time)}."
+
+    if not sessions_util.is_expired_session(expiration_time):
+        # Convert `datetime` instances to string before returning.
+        converted = [x.isoformat() if isinstance(x, datetime) else x for x in result]
+        return GetSessionResponse(**dict(zip(FIELD_NAMES, converted)))
 
     return ServiceError(status_code=401, message='Unauthorized session')
 

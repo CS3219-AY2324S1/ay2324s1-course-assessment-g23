@@ -5,20 +5,20 @@ import { useNavigate } from 'react-router-dom'
 import { useSessionDetails } from '../stores/sessionStore.ts'
 
 const Users = () => {
-    const { data: sessionDetails } = useSessionDetails()
+    const { data: sessionDetails, isFetching: isFetchingSession } = useSessionDetails()
     const navigate = useNavigate()
 
     // Redirect if not logged in.
     useEffect(() => {
         const hasAccessToPage = sessionDetails !== null && sessionDetails.role === 'maintainer'
-        if (!hasAccessToPage) navigate('/')
-    }, [sessionDetails, navigate])
+        if (!hasAccessToPage && !isFetchingSession) navigate('/')
+    }, [sessionDetails, isFetchingSession, navigate])
 
     return (
-        <div>
+        <>
             <Navbar />
             <UserTable />
-        </div>
+        </>
     )
 }
 

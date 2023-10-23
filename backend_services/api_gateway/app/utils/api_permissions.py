@@ -12,7 +12,7 @@ Method: TypeAlias = Literal["POST", "GET", "DELETE", "PUT"]
 PERMISSIONS_TABLE: dict[str, dict[Method, PermissionLevel]] = {
     "users": {
         "POST": PUBLIC_PERMISSION,
-        "GET": USER_PERMISSION,
+        "GET": PUBLIC_PERMISSION,
         "DELETE": USER_PERMISSION,
         "PUT": USER_PERMISSION
         },

@@ -3,6 +3,7 @@ import { IconButton, Tooltip, Typography } from '@mui/material'
 import React from 'react'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
+
 interface ReadOnlyRowProps {
     user: User
     handleEditClick: (event: React.MouseEvent<HTMLButtonElement>, user: User) => void
@@ -32,21 +33,6 @@ const UserReadOnlyRow: React.FC<ReadOnlyRowProps> = ({
                 </Tooltip>
             </td>
             <td>{user.username}</td>
-            <td>
-                <Tooltip title={<p>{user.password}</p>} arrow>
-                    <Typography
-                        style={{
-                            cursor: 'pointer',
-                            maxWidth: '20ch', // Adjust the maximum width as needed
-                            overflow: 'hidden',
-                            whiteSpace: 'nowrap',
-                            textOverflow: 'ellipsis',
-                        }}
-                    >
-                        {user.password}
-                    </Typography>
-                </Tooltip>
-            </td>
             <td>{user.email}</td>
             <td>{user.role}</td>
             <td>

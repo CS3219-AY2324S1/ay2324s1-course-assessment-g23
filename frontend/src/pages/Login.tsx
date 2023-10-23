@@ -3,9 +3,10 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { useLoginUser, useSessionDetails } from '../stores/sessionStore'
 import AlertMessage from '../components/AlertMessage'
+import { motion } from 'framer-motion'
 
 const Login = () => {
-    const { data: sessionDetails } = useSessionDetails()
+    const { data: sessionDetails, isFetching: isFetchingSession } = useSessionDetails()
     const loginUserMutation = useLoginUser()
     const navigate = useNavigate()
     const [username, setUsername] = useState('')
@@ -14,15 +15,21 @@ const Login = () => {
     // Redirect if already logged in.
     useEffect(() => {
         const isLoggedIn = sessionDetails !== null
-        if (isLoggedIn) navigate('/questions')
-    }, [sessionDetails, navigate])
+        if (isLoggedIn && !isFetchingSession) navigate('/questions')
+    }, [sessionDetails, isFetchingSession, navigate])
 
     const handleLogin = async () => {
         await loginUserMutation.mutateAsync({ username, password })
     }
 
     return (
-        <>
+        <motion.div
+            key='Login'
+            initial={{ x: '50vw' }}
+            animate={{ x: 0 }}
+            exit={{ x: '-90vw' }}
+            transition={{ duration: 0.3 }}
+        >
             <span className='home-page-container'>
                 <div className='info-container'>
                     <h1>Welcome to PeerPrep!</h1>
@@ -59,7 +66,7 @@ const Login = () => {
                     <h4>Oops! {loginUserMutation.error.detail}</h4>
                 </AlertMessage>
             )}
-        </>
+        </motion.div>
     )
 }
 

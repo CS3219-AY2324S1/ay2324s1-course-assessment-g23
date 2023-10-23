@@ -1,6 +1,6 @@
 import React, { ChangeEvent, FormEvent, Fragment, useState } from 'react'
 import UserEditableRow from './UserEditableRow.tsx'
-import { User, UserSignupDetails } from '../../api/users.ts'
+import type { UpdatedUser, User, UserSignupDetails } from '../../api/users.ts'
 import { useAllUsers, useDeleteUser, useStoreUser, useUpdateUser } from '../../stores/userStore.ts'
 import UserReadOnlyRow from './UserReadOnlyRow.tsx'
 import '../../styles/UserTable.css'
@@ -17,7 +17,7 @@ export const UserTable: React.FC = () => {
         password: '',
         email: '',
     })
-    const [editFormData, setEditFormData] = useState<User | null>(null)
+    const [editFormData, setEditFormData] = useState<UpdatedUser | null>(null)
 
     const handleAddFormChange = (
         event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -52,7 +52,12 @@ export const UserTable: React.FC = () => {
         event.preventDefault()
 
         if (!editFormData) return
-        await updateUserMutation.mutateAsync(editFormData)
+
+        const cleanedData = Object.fromEntries(
+            Object.entries(editFormData).filter(([_, value]) => value !== '')
+        ) as UpdatedUser
+
+        await updateUserMutation.mutateAsync(cleanedData)
         setEditFormData(null)
     }
 
@@ -76,7 +81,6 @@ export const UserTable: React.FC = () => {
                         <tr>
                             <th>ID</th>
                             <th>Name</th>
-                            <th>Hashed Password</th>
                             <th>Email</th>
                             <th>Role</th>
                             <th>Actions</th>

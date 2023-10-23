@@ -6,13 +6,15 @@ const QUESTION_API_URL = 'http://localhost:8000/questions'
 /** HTTP request headers for question bank API. */
 const QUESTION_API_HEADER = { 'Content-Type': 'application/json' }
 
+export type Complexity = 'Easy' | 'Medium' | 'Hard'
+
 /** Represents a question in the question bank. */
 export interface Question {
     question_id: string
     title: string
     description: string
     category: string
-    complexity: 'Easy' | 'Medium' | 'Hard'
+    complexity: Complexity
 }
 
 /**

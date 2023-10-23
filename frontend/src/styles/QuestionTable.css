@@ -1,16 +1,25 @@
-.question-container {
-    padding: 5rem;
+.question-page-container {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 60rem;
+    padding: 0 1rem
 }
 
+
 .question-container td {
-    padding: 0.5rem 1rem
+    padding: 0.75rem 1rem;
 }
+
 
 .question-container th {
     padding: 0 2rem 0.5rem 1rem;
     text-align: left;
-    min-width: 7rem;
+    min-width: 100%;
     border-bottom: 2px solid #303030;
+}
+
+#id-header {
+    width: 7rem;
 }
 
 .question-container input {
@@ -87,5 +96,6 @@ Dialog {
 
 .question-table {
     border-collapse: collapse;
+    width: 100%;
 }
 

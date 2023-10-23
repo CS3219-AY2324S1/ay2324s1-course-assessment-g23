@@ -13,6 +13,10 @@
     -webkit-text-size-adjust: 100%;
 }
 
+::-webkit-scrollbar {
+    display: none;
+}
+
 a {
     font-weight: 500;
     color: #646cff;
@@ -45,6 +49,7 @@ button {
     cursor: pointer;
     transition: border-color 0.25s;
 }
+
 button:hover {
     border-color: #646cff;
 }
@@ -55,9 +60,11 @@ button:hover {
         color: white;
         background-color: #ffffff;
     }
+
     a:hover {
         color: #747bff;
     }
+
     button {
         background-color: #f9f9f9;
     }
@@ -76,4 +83,26 @@ button:hover {
 .complexity-color-Hard {
     color: #fe375f;
     font-weight: bold;
+}
+
+.bg-complexity-color-Easy {
+    background-color: #00b8a2;
+}
+
+.bg-complexity-color-Medium {
+    background-color: #febf1d;
+}
+
+.bg-complexity-color-Hard {
+    background-color: #fe375f;
+}
+
+.progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: white;
+    transform-origin: 0%;
 }

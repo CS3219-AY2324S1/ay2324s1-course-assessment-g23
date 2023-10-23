@@ -6,7 +6,7 @@
     margin-left: auto;
     margin-right: auto;
     text-align: center;
-    background:#303030;
+    background: #303030;
     width: 30rem;
     min-height: 30rem;
     border-radius: 1rem;
@@ -28,7 +28,7 @@
 }
 
 .signup-box input::placeholder {
-    color:#c2c2c2;
+    color: #c2c2c2;
 }
 
 .signup-box button {
@@ -41,7 +41,7 @@
 
 .link-button {
 
-    margin:auto;
+    margin: auto;
     width: 17.6rem;
     height: 1.5rem;
     display: block;

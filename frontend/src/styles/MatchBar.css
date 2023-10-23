@@ -1,0 +1,87 @@
+.matchbar-container {
+    padding: 10rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 15rem;
+    width: 60rem;
+}
+
+.welcome {
+    background-color: #303030;
+    padding: 3rem 1rem 1rem 3rem;
+    margin-right: 1rem;
+    border-radius: 0.5rem;
+    text-align: left;
+    height: 13rem;
+    width: 20rem;
+}
+
+.match {
+    background-color: #303030;
+    border-radius: 0.5rem;
+    width: 45rem;
+    height: 13rem;
+}
+
+.match-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    padding-top: 1rem;
+}
+
+.match-title h2 {
+    padding: 0 1rem;
+}
+
+.match-button-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0rem 20px 2rem 20px;
+    border-radius: 5px;
+}
+
+.match-button {
+    width: 10rem;
+    height: 5rem;
+    margin: 0 0.5rem;
+    font-weight: bold;
+    font-size: 1.25rem;
+
+}
+
+.icon-text-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+#easy {
+    background-color: #00b8a2;
+}
+
+#medium {
+    background-color: #febf1d;
+}
+
+#hard {
+    background-color: #fe375f;
+}
+
+@media only screen and (max-width: 800px) {
+    .welcome {
+        display: none;
+    }
+
+    .matchbar-container {
+        width:100%;
+    }
+
+    .match {
+        width: 100%;
+    }
+}
