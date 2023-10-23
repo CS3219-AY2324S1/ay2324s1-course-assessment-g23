@@ -39,7 +39,7 @@ const Login = () => {
                     </h3>
                 </div>
                 <div className='login-container'>
-                    <img src='../../peerprep.png' />
+                    <img src='../../peerprep.png' width='80' height='80' />
                     <h2>Login to your account</h2>
                     <form className='login-form' onSubmit={(e) => e.preventDefault()}>
                         <input
