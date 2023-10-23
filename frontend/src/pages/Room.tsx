@@ -1,12 +1,21 @@
-import { useState } from 'react'
+import { Add, Circle } from '@mui/icons-material'
+import { motion } from 'framer-motion'
+import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router'
 import CodeEditor from '../components/CollaborationRoom/CodeEditor'
 import ConfirmationBox from '../components/CollaborationRoom/ConfirmationBox.tsx'
 import QuestionDescription from '../components/CollaborationRoom/QuestionDescription.tsx'
+import { useMatch } from '../stores/matchingStore.ts'
+import { useUser } from '../stores/userStore.ts'
+import '../styles/Room.css'
 
 export const Room = () => {
     const [showConfirmation, setShowConfirmation] = useState(false)
     const navigate = useNavigate()
+    const constraintsRef = useRef(null)
+    const { data: match } = useMatch()
+    const { data: matchedUser } = useUser(match?.user_id)
+
     const handleExit = () => {
         setTimeout(() => {
             navigate('/questions')
@@ -15,6 +24,30 @@ export const Room = () => {
 
     return (
         <div>
+            <motion.div ref={constraintsRef}>
+                <motion.div
+                    className='chatbox'
+                    style={{ display: 'flex' }}
+                    drag='x'
+                    dragElastic={false}
+                    dragMomentum={false}
+                    dragConstraints={constraintsRef}
+                >
+                    <div
+                        style={{
+                            display: 'flex',
+                            justifyContent: 'flex-end',
+                            alignItems: 'center',
+                            width: '100%',
+                        }}
+                    >
+                        <Add sx={{ marginRight: 'auto' }} />
+                        <Circle sx={{ alignSelf: 'right', color: '#00b8a2', fontSize: '10px' }} />
+                        <h3 style={{ color: 'white', margin: '12px' }}>{matchedUser!.username}</h3>
+                    </div>
+                </motion.div>
+            </motion.div>
+
             {showConfirmation && (
                 <ConfirmationBox onClose={() => setShowConfirmation(false)} onExit={handleExit} />
             )}

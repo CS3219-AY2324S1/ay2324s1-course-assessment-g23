@@ -95,15 +95,3 @@ button:hover {
 .bg-complexity-color-Hard {
     background-color: #fe375f;
 }
-
-.split-container {
-    display: flex;
-    height: 100%;
-    width: 100%;
-}
-
-.pane {
-    flex: 1;
-    height: 100vh;
-    box-sizing: border-box;
-}
