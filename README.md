@@ -4,32 +4,55 @@
 
 - [Getting Started](/README.md#getting-started)
   - [Local deployment](/README.md#local-deployment)
-  - [Demo](/README.md#demo)
+  - [Assignment 1](/README.md#assignment---1)
+  - [Assignment 2](/README.md#assignment---2-demo)
+  - [Assignment 3](/README.md#assignment---3-demo)
+  - [Assignment 4](/README.md#assignment---4-demo)
+  - [Assignment 5](/README.md#assignment---5-demo)
+  - [Assignment 6](/README.md#assignment---6-demo)
+
 - [Requirements](/README.md#requirements)
 - [Architecture](/README.md#architecture)
+  - [Frontend](/README.md#frontend)
+  - [Backend Services](/README.md#backend-services)
+    - [API Gateway](/README.md#api-gateway)
+    - [Users service](/README.md#users-service)
+    - [Questions service](/README.md#questions-service)
+    - [Matching service](/README.md#matching-service)
 
 ## Getting Started
 
 ### Local deployment
+
+(For Assignment 1, the instructions are in [this section](/README.md#assignment---1))
 
 1. Ensure you have docker and git installed on your device.
 2. Clone code from this github repository.
 3. Run `start_containers.sh` through the CLI and wait for all containers to start up.
 4. You can access the application on `localhost` or `localhost:80`.
 
-### Demo
-
 ### Assignment - 1
 
-### Assignment - 2
+1. Checkout to 
+2. Navigate to frontend folder
+3. In the command line, run the following:
 
-### Assignment - 3
+```
+npm install
+npm run dev
+```
 
-### Assignment - 4
+#### Demo
 
-### Assignment - 5
+### Assignment - 2 Demo
 
-### Assignment - 6
+### Assignment - 3 Demo
+
+### Assignment - 4 Demo
+
+### Assignment - 5 Demo
+
+### Assignment - 6 Demo
 
 ## Requirements
 
@@ -49,7 +72,7 @@ All microservices are deployed as microservice within a docker container
 
 Responsible for web UI and user interaction.
 
-Technology: React
+Technology: React, TypeScript, Vite
 
 Communication: Send REST requests to API Gateway.
 
