@@ -1,5 +1,5 @@
 import { Add, Circle, Remove } from '@mui/icons-material'
-import { motion } from 'framer-motion'
+import { motion, useAnimation } from 'framer-motion'
 import React, { useRef, useState } from 'react'
 import '../../styles/Room.css'
 import ChatMessage from './ChatMessage.tsx'
@@ -8,18 +8,30 @@ const ChatBox: React.FC = () => {
     const constraintsRef = useRef(null)
     const [formValue, setFormValue] = useState('')
     const [isMinimized, setIsMinimized] = useState(true)
+    const chatHeaderControls = useAnimation()
 
     const chatBoxVariants = {
         minimized: { height: '50px' },
         expanded: { height: '500px' },
     }
 
-    const sendMessage = () => {
+    const sendMessage = (event: React.FormEvent) => {
+        event.preventDefault()
         //insert api call
+        setFormValue('')
     }
 
-    const toggleMinimize = () => {
+    const toggleMinimize = (e: React.MouseEvent) => {
+        e.stopPropagation()
         setIsMinimized(!isMinimized)
+    }
+
+    const handleHeaderClick = () => {
+        if (isMinimized) {
+            chatHeaderControls.start({ y: -10 }).then(() => {
+                chatHeaderControls.start({ y: 0 })
+            })
+        }
     }
 
     return (
@@ -34,12 +46,23 @@ const ChatBox: React.FC = () => {
                 dragMomentum={false}
                 dragConstraints={constraintsRef}
             >
-                <div style={{ alignItems: 'center', width: '100%' }}>
+                <motion.div
+                    style={{ alignItems: 'center', width: '100%' }}
+                    animate={chatHeaderControls}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handleHeaderClick}
+                >
                     <div className='chat-header'>
                         {isMinimized ? (
-                            <Add sx={{ marginRight: 'auto' }} onClick={toggleMinimize} />
+                            <Add
+                                sx={{ marginRight: 'auto', cursor: 'pointer' }}
+                                onClick={toggleMinimize}
+                            />
                         ) : (
-                            <Remove sx={{ marginRight: 'auto' }} onClick={toggleMinimize} />
+                            <Remove
+                                sx={{ marginRight: 'auto', cursor: 'pointer' }}
+                                onClick={toggleMinimize}
+                            />
                         )}
                         <Circle sx={{ alignSelf: 'right', color: '#00b8a2', fontSize: '10px' }} />
                         <h3 style={{ color: 'white', margin: '12px' }}>Chat Room</h3>
@@ -60,7 +83,7 @@ const ChatBox: React.FC = () => {
                             </button>
                         </form>
                     </div>
-                </div>
+                </motion.div>
             </motion.div>
         </motion.div>
     )
