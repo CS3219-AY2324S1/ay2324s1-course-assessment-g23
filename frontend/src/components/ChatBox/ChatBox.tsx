@@ -33,7 +33,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ onMinimise }) => {
                         <h3 style={{ color: 'white', margin: '12px' }}>Chat Room</h3>
                     </div>
                     <div className='chat-background'>
-                        <ChatMessage text={'hello'} sender={'user123'} />
+                        <ChatMessage text={'hello'} sender={'admin'} />
                     </div>
                     <div style={{ backgroundColor: 'white', padding: '10px' }}>
                         <form onSubmit={sendMessage}>

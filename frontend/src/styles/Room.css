@@ -78,13 +78,19 @@
     padding: 5px 0;
 }
 
-.message-item {
-    display: block;
+.message-item-received {
     flex-direction: column;
     margin: 5px auto 5px 0;
 }
 
-.text-box {
+.message-item-sent {
+    display: flex;
+    flex-direction: column;
+    margin: 5px 0 5px auto;
+    justify-content: right;
+}
+
+.text-box-received {
     background-color: #00b8a2;
     display: flex;
     padding: 10px;
@@ -94,10 +100,22 @@
     margin: 0 10px;
 }
 
+.text-box-sent {
+    background-color: #fe375f;
+    display: flex;
+    padding: 10px;
+    border-radius: 15px 15px 5px 15px;
+    color: white;
+    max-width: 300px;
+    margin: 0 10px;
+}
+
 .sender-info {
     display: flex;
+    justify-content: left;
     margin: 0 10px;
     font-style: italic;
     font-size: 12px;
     color: #575757;
 }
+
