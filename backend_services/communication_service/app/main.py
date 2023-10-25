@@ -33,7 +33,7 @@ async def join_communication_channel(websocket: WebSocket, room_id: str):
 
     room.clients.append(user_websocket)
 
-    chat_messages = room.chat_room.get_messages_in_order()
+    chat_messages = room.chat_room.get_messages()
     for sender_id, message in chat_messages:
         await websocket.send_json({
             "event": "receive-message",

@@ -21,9 +21,6 @@ class ChatRoom:
     def get_messages(self):
         return self.chat_messages
 
-    def get_messages_in_order(self):
-        return [message for sender_id, message in self.chat_messages]
-
 @dataclass
 class Room:
     """Represents a room, containing the websockets of all clients in the room
