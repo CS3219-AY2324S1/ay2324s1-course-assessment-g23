@@ -1,16 +1,16 @@
 import { Add, Circle, Remove } from '@mui/icons-material'
 import { motion, useAnimation } from 'framer-motion'
-import React, { useRef, useState, useEffect } from 'react'
-import '../../styles/Room.css'
-import ChatMessage from './ChatMessage.tsx'
+import React, { useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router'
 import { useSessionDetails } from '../../stores/sessionStore.ts'
 import { useUser } from '../../stores/userStore.ts'
+import '../../styles/Room.css'
+import ChatMessage from './ChatMessage.tsx'
 
 type ChatMessage = {
-    sender: string;  // The sender's name or identifier
-    text: string; // The message content
-  };
+    sender: string // The sender's name or identifier
+    text: string // The message content
+}
 
 const ChatBox: React.FC = () => {
     const { roomId } = useParams()
@@ -21,11 +21,12 @@ const ChatBox: React.FC = () => {
     const [formValue, setFormValue] = useState('')
     const [isMinimized, setIsMinimized] = useState(true)
     const chatHeaderControls = useAnimation()
-    const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
-    
+    const [chatMessages, setChatMessages] = useState<ChatMessage[]>([])
 
     useEffect(() => {
-        const socket = new WebSocket(`ws://localhost:8000/ws/communication/${roomId}/${user?.username}`)
+        const socket = new WebSocket(
+            `ws://localhost:8000/ws/communication/${roomId}/${user?.username}`
+        )
         setSocket(socket)
 
         return () => {
@@ -43,14 +44,13 @@ const ChatBox: React.FC = () => {
         socket.onmessage = (event) => {
             const data = JSON.parse(event.data)
 
-            if (data.event == "receive-message") {
+            if (data.event == 'receive-message') {
                 const text = data.message
                 const sender_id = data.sender
-                const newMessage = { sender: sender_id, text: text}
-                setChatMessages((prevChatMessages) => [...prevChatMessages, newMessage]);
+                const newMessage = { sender: sender_id, text: text }
+                setChatMessages((prevChatMessages) => [...prevChatMessages, newMessage])
             }
         }
-
     }, [socket])
 
     const chatBoxVariants = {
@@ -60,22 +60,22 @@ const ChatBox: React.FC = () => {
 
     const sendMessage = (event: React.FormEvent) => {
         event.preventDefault()
-        if (!socket) return; // Ensure the socket is available
+        if (!socket) return // Ensure the socket is available
 
         // Create the payload in the required format
         const payload = JSON.stringify({
-            event: "send-message",
+            event: 'send-message',
             sender: user?.username,
             message: formValue,
-        });
-    
+        })
+
         // Send the message through the WebSocket
-        socket.send(payload);
+        socket.send(payload)
 
         setChatMessages((prevChatMessages) => [
             ...prevChatMessages,
-            { sender: user?.username as string, text: formValue } as ChatMessage
-        ]);
+            { sender: user?.username as string, text: formValue } as ChatMessage,
+        ])
 
         setFormValue('')
     }
@@ -151,4 +151,3 @@ const ChatBox: React.FC = () => {
 }
 
 export default ChatBox
-

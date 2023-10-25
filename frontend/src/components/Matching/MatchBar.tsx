@@ -7,10 +7,10 @@ import { useSessionDetails } from '../../stores/sessionStore.ts'
 import { useUser } from '../../stores/userStore.ts'
 import '../../styles/MatchBar.css'
 import AlertMessage from '../AlertMessage.tsx'
+import { useTimer } from '../TimerProvider.tsx'
 import MatchSuccess from './MatchSuccess.tsx'
 import MatchingScreen from './MatchingScreen.tsx'
 import MatchingStatusBar from './MatchingStatusBar.tsx'
-import { useTimer } from '../TimerProvider.tsx'
 
 const tooltipDescription =
     'Select a difficulty level and get matched with another user. ' +
