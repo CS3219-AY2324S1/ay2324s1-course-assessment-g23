@@ -54,8 +54,8 @@ async def websocket_endpoint(ws_a: WebSocket, route: str):
             requested_service = matching_api_url
         case["collab", room_id]:
             requested_service = collaboration_api_url + f"/{room_id}"
-        case["communication", room_id]:
-            requested_service = communication_api_url + f"/{room_id}"
+        case["communication", room_id, user_id]:
+            requested_service = communication_api_url + f"/{room_id}" + f"/{user_id}"
         case _:
             # If route doesn't match any service above, exit.
             return

@@ -18,8 +18,8 @@ rooms: dict[str, Room] = {}
 """Dict where keys are the room-ID, values are the room's info."""
 
 
-@app.websocket("/ws/communication/{room_id}")
-async def join_communication_channel(websocket: WebSocket, room_id: str):
+@app.websocket("/ws/communication/{room_id}/{user_id}")
+async def join_communication_channel(websocket: WebSocket, room_id: str, user_id: str):
     global rooms
 
     await websocket.accept()
@@ -29,9 +29,10 @@ async def join_communication_channel(websocket: WebSocket, room_id: str):
         rooms[room_id] = Room()
     room = rooms[room_id]
 
-    user_websocket = UserWebSocket(user_id="user_id", websocket=websocket)
+    user_websocket = UserWebSocket(
+        user_id=user_id, websocket=websocket)
 
-    room.clients.append(user_websocket)
+    room.clients[user_websocket.user_id] = user_websocket
 
     chat_messages = room.chat_room.get_messages()
     for sender_id, message in chat_messages:
@@ -49,9 +50,8 @@ async def join_communication_channel(websocket: WebSocket, room_id: str):
                 message = data.get("message")
                 sender = data.get("sender")
                 room.chat_room.add_message(sender_id=sender, message=message)
-
-                for client in room.clients:
-                    if client.websocket != user_websocket.websocket:
+                for client_id, client in room.clients.items():
+                    if client_id != user_websocket.user_id:  # Exclude the sender
                         await client.websocket.send_json({
                             "event": "receive-message",
                             "sender": sender,
@@ -59,7 +59,8 @@ async def join_communication_channel(websocket: WebSocket, room_id: str):
                         })
 
     except WebSocketDisconnect:
-        room.clients.remove(websocket)
+        if user_websocket.user_id in room.clients:
+            del room.clients[user_websocket.user_id]
 
 
 '''
