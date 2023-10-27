@@ -63,8 +63,8 @@ npm run dev
 1. Ensure you have docker and git installed on your device.
 2. Clone code from this github repository.
 3. Checkout to the commit tagged `assignment-4`.
-3. Run `start_containers.sh` through the CLI and wait for all containers to start up.
-4. You can access the application on `localhost` or `localhost:80`.
+4. Run `start_containers.sh` through the CLI and wait for all containers to start up.
+5. You can access the application on `localhost` or `localhost:80`.
 
 #### Demo 4
 
@@ -73,8 +73,8 @@ npm run dev
 1. Ensure you have docker and git installed on your device.
 2. Clone code from this github repository.
 3. Checkout to the commit tagged `assignment-5`.
-3. Run `start_containers.sh` through the CLI and wait for all containers to start up.
-4. You can access the application on `localhost` or `localhost:80`.
+4. Run `start_containers.sh` through the CLI and wait for all containers to start up.
+5. You can access the application on `localhost` or `localhost:80`.
 
 ## Important Documents
 
