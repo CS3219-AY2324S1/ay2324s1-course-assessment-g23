@@ -79,4 +79,4 @@ npm run dev
 ## Important Documents
 
 - [Architecture document](/docs/Architecture%20document.md)
-- [Requirements](https://docs.google.com/spreadsheets/d/1u_R3Bcg05e8LW6S2Py56juMZFTpMCAky/edit?usp=drive_link&ouid=117685790049818766018&rtpof=true&sd=true)
+- [Requirements](/docs/Requirements.xlsx)
