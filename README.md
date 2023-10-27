@@ -79,4 +79,4 @@ npm run dev
 ## Important Documents
 
 - [Architecture document](/docs/Architecture%20document.md)
-- [Requirements](/docs/Requirements.md)
+- [Requirements](/docs/Requirements.xlsx)
