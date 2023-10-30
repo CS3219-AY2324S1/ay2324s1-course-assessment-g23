@@ -1,4 +1,4 @@
-FROM ay2324s1-course-assessment-g23-base_api:latest
+FROM peerprep_base_api:latest
 
 WORKDIR /
 

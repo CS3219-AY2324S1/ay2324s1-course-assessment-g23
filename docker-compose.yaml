@@ -4,6 +4,7 @@ services:
     container_name: frontend
     build:
       context: ./frontend
+    image: peerprep_frontend
     ports:
       - 80:80
     networks:
@@ -12,6 +13,7 @@ services:
     build:
       context: ./backend_services
       dockerfile: ./Dockerfile
+    image: peerprep_base_api
     container_name: base_api
     networks:
       - backend-apis
@@ -19,6 +21,7 @@ services:
     build:
       context: ./backend_services/api_gateway
       dockerfile: ../API_Dockerfile
+    image: peerprep_api_gateway
     container_name: api_gateway
     networks:
       - client-side
@@ -43,6 +46,7 @@ services:
       context: ./backend_services/users_service/api
       dockerfile: ../../API_Dockerfile
     container_name: users_api
+    image: peerprep_users_api
     ports:
       - 8001:8000
     networks:
@@ -61,6 +65,7 @@ services:
     build:
       context: ./backend_services/questions_service/api
       dockerfile: ../../API_Dockerfile
+    image: peerprep_questions_api
     container_name: questions_api
     ports:
       - 8002:8000
@@ -80,6 +85,7 @@ services:
     build:
       context: ./backend_services/collaboration_service
       dockerfile: Dockerfile
+    image: peerprep_collaboration_api
     container_name: collaboration_api
     ports:
       - 8004:8000
@@ -92,6 +98,7 @@ services:
     build:
       context: ./backend_services/communication_service
       dockerfile: Dockerfile
+    image: peerprep_communication_api
     container_name: communication_api
     ports:
       - 8005:8000
@@ -104,6 +111,7 @@ services:
     build:
       context: ./backend_services/matching_service
       dockerfile: Dockerfile
+    image: peerprep_matching_api
     container_name: matching_api
     ports:
       - 8003:8003
@@ -116,6 +124,7 @@ services:
     build:
       context: ./backend_services/users_service/database
       dockerfile: ../../DB_Dockerfile
+    image: peerprep_users_database
     container_name: users_database
     ports:
       - 5432:5432
@@ -132,6 +141,7 @@ services:
     build:
       context: ./backend_services/questions_service/database
       dockerfile: ../../DB_Dockerfile
+    image: peerprep_questions_database
     container_name: questions_database
     ports:
       - 5433:5432

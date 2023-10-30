@@ -18,7 +18,7 @@ if [ "$(docker volume ls | grep questions-data)" == "" ]; then
 fi
 
 # Stop any currently-running services.
-docker-compose down
+docker compose down
 
 # Rebuild and start the services.
-docker-compose --env-file .env up --build "$@"
+docker compose --env-file .env up --build "$@"
