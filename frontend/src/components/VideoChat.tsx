@@ -75,8 +75,7 @@ function VideoChat() {
     }, [socket])
 
     useEffect(() => {
-        if (socket == null) return
-        console.log('sent')
+        if (peerId == '' || socket == null) return
         socket.send(
             JSON.stringify({
                 event: 'join-video',
