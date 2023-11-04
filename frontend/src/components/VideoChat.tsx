@@ -59,7 +59,6 @@ function VideoChat() {
             })
 
             peerInstance.current = peer
-
             console.log('Video connection is open')
         }
 
@@ -76,8 +75,8 @@ function VideoChat() {
     }, [socket])
 
     useEffect(() => {
-        if (peerId == '') return
-        socket?.send(
+        if (peerId == '' || socket == null) return
+        socket.send(
             JSON.stringify({
                 event: 'join-video',
                 p2pId: peerId,

@@ -116,20 +116,25 @@ async def join_communication_channel(websocket: WebSocket, room_id: str, user_id
 clients = []
 @app.websocket("/communication_video/{room_id}/{user_id}")
 async def join_video_channel(websocket: WebSocket, room_id: str, user_id: str):
+    global clients
 
     await websocket.accept()
     clients.append(websocket)
+    try:
+        while True:
+            data = await websocket.receive_json()
+            event = data["event"]
+            if event == "join-video":
+                p2p_id = data["p2pId"]
+                for client in clients:
+                    if client is not websocket:
+                        await client.send_json({
+                                "event": "join-video",
+                                "p2pId": p2p_id,
+                            })
+    except WebSocketDisconnect:
+        websocket.close()
+        clients.remove(websocket)
 
-    while True:
-        data = await websocket.receive_json()
-        event = data["event"]
-        if event == "join-video":
-            p2p_id = data["p2pId"]
-            for client in clients:
-                if client is not websocket:
-                    await client.send_json({
-                            "event": "join-video",
-                            "p2pId": p2p_id,
-                        })
 
 
