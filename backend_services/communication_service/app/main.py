@@ -132,9 +132,7 @@ async def join_video_channel(websocket: WebSocket, room_id: str, user_id: str):
 
     while True:
         data = await websocket.receive_json()
-        print(data, "#####")
         event = data["event"]
-        print('', event)
         if event == "join-video":
             p2p_id = data["p2pId"]
             for client in clients:
