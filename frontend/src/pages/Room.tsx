@@ -21,7 +21,7 @@ export const Room = () => {
 
     return (
         <div>
-            <VideoChat/>
+            <VideoChat />
             <ChatBox />
             {showConfirmation && (
                 <ConfirmationBox onClose={() => setShowConfirmation(false)} onExit={handleExit} />
