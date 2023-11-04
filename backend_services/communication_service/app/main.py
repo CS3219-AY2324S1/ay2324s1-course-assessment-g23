@@ -130,13 +130,6 @@ async def join_video_channel(websocket: WebSocket, room_id: str, user_id: str):
     await websocket.accept()
     clients.append(websocket)
 
-    # if video_room.is_full():
-    #     await websocket.send_json({
-    #         "event": "room-full",
-    #         "message": "The room is already full. You cannot join at the moment."
-    #     })
-    #     await websocket.close()
-    #     return
     while True:
         data = await websocket.receive_json()
         print(data, "#####")
@@ -150,15 +143,5 @@ async def join_video_channel(websocket: WebSocket, room_id: str, user_id: str):
                             "event": "join-video",
                             "p2pId": p2p_id,
                         })
-            # elif event == 'leave-room':
-            #     sender = data.get("sender")
-            #     room.chat_room.add_message(
-            #         sender_id=sender, message='', msg_type='leave')
-            #     for client_id, client in room.clients.items():
-            #         if client_id != user_websocket.user_id:  # Exclude the sender
-            #             await client.websocket.send_json({
-            #                 "event": "leave-room",
-            #                 "sender": sender,
-            #             })
 
 
