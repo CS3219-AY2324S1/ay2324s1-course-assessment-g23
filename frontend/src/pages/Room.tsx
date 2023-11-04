@@ -6,6 +6,7 @@ import CodeExecutor from '../components/CollaborationRoom/CodeExecutor.tsx'
 import ConfirmationBox from '../components/CollaborationRoom/ConfirmationBox.tsx'
 import QuestionDescription from '../components/CollaborationRoom/QuestionDescription.tsx'
 import RoomNavBar from '../components/CollaborationRoom/RoomNavBar.tsx'
+import VideoChat from '../components/VideoChat.tsx'
 import '../styles/Room.css'
 
 export const Room = () => {
@@ -20,6 +21,7 @@ export const Room = () => {
 
     return (
         <div>
+            <VideoChat/>
             <ChatBox />
             {showConfirmation && (
                 <ConfirmationBox onClose={() => setShowConfirmation(false)} onExit={handleExit} />
