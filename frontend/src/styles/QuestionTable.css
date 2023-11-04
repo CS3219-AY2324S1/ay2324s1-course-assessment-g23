@@ -193,7 +193,7 @@ Dialog {
     border-radius: 5px;
     padding: 5px 10px;
     gap: 3px;
-    height: 100%
+    height: 100%;
 }
 
 .reset-row {
@@ -223,7 +223,8 @@ Dialog {
     border-collapse: collapse;
 }
 
-.markdown th, .markdown td {
+.markdown th,
+.markdown td {
     padding: 6px 13px;
     border: 1px solid white;
     height: 100%;
@@ -252,7 +253,8 @@ Dialog {
 }
 
 @media only screen and (max-width: 600px) {
-    .id-column, #id-header {
+    .id-column,
+    #id-header {
         display: none;
     }
 
