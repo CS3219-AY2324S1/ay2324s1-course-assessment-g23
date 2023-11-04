@@ -29,7 +29,17 @@ class Room:
     # clients: list[UserWebSocket] = field(default_factory=list)
     clients: dict[str, UserWebSocket] = field(default_factory=dict)
     chat_room: ChatRoom = field(default_factory=ChatRoom)
-    
+
+    def is_full(self) -> bool:
+        return len(self.clients) > 2
+
+@dataclass
+class VideoRoom:
+    """Represents a room, containing the websockets of all clients in the room
+    """
+    # clients: list[UserWebSocket] = field(default_factory=list)
+    clients: dict[str, UserWebSocket] = field(default_factory=dict)
+
     def is_full(self) -> bool:
         return len(self.clients) > 2
 
@@ -38,4 +48,3 @@ class MessagePayload(TypedDict):
     event: str
     sender: str
     message: str
-    

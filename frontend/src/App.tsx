@@ -7,7 +7,7 @@ import Questions from './pages/Questions.tsx'
 import Room from './pages/Room.tsx'
 import Signup from './pages/Signup.tsx'
 import Users from './pages/Users.tsx'
-import VideoChat from './pages/Video.tsx'
+import VideoChat from './components/VideoChat.tsx'
 
 const queryClient = new QueryClient()
 

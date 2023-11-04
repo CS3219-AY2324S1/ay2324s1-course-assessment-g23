@@ -1,4 +1,4 @@
-from data_classes import MessagePayload, Room, UserWebSocket
+from data_classes import MessagePayload, Room, VideoRoom, UserWebSocket
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -14,7 +14,7 @@ app.add_middleware(
     expose_headers=["*"],
 )
 
-rooms: dict[str, Room] = {}
+rooms: dict[str, VideoRoom] = {}
 """Dict where keys are the room-ID, values are the room's info."""
 
 
@@ -70,6 +70,7 @@ async def join_communication_channel(websocket: WebSocket, room_id: str, user_id
         while True:
             data: MessagePayload = await websocket.receive_json()
             event = data.get("event")
+            print('chatbox', event)
             if event == "send-message":
                 message = data.get("message")
                 sender = data.get("sender")
@@ -120,3 +121,44 @@ async def join_communication_channel(websocket: WebSocket, room_id: str, user_id
                         "sender": user_websocket.user_id,
                     })
             del room.clients[user_websocket.user_id]
+
+clients = []
+@app.websocket("/communication_video/{room_id}/{user_id}")
+async def join_video_channel(websocket: WebSocket, room_id: str, user_id: str):
+    print('video called')
+
+    await websocket.accept()
+    clients.append(websocket)
+
+    # if video_room.is_full():
+    #     await websocket.send_json({
+    #         "event": "room-full",
+    #         "message": "The room is already full. You cannot join at the moment."
+    #     })
+    #     await websocket.close()
+    #     return
+    while True:
+        data = await websocket.receive_json()
+        print(data, "#####")
+        event = data["event"]
+        print('', event)
+        if event == "join-video":
+            p2p_id = data["p2pId"]
+            for client in clients:
+                if client is not websocket:
+                    await client.send_json({
+                            "event": "join-video",
+                            "p2pId": p2p_id,
+                        })
+            # elif event == 'leave-room':
+            #     sender = data.get("sender")
+            #     room.chat_room.add_message(
+            #         sender_id=sender, message='', msg_type='leave')
+            #     for client_id, client in room.clients.items():
+            #         if client_id != user_websocket.user_id:  # Exclude the sender
+            #             await client.websocket.send_json({
+            #                 "event": "leave-room",
+            #                 "sender": sender,
+            #             })
+
+
