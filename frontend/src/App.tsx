@@ -7,6 +7,7 @@ import Questions from './pages/Questions.tsx'
 import Room from './pages/Room.tsx'
 import Signup from './pages/Signup.tsx'
 import Users from './pages/Users.tsx'
+import VideoChat from './pages/Video.tsx'
 
 const queryClient = new QueryClient()
 
@@ -28,6 +29,7 @@ const App: React.FC = () => {
                         <Route key='Questions' path='/questions' element={<Questions />} />
                         <Route key='Users' path='/users' element={<Users />} />
                         <Route key='Room' path='/room/:roomId' element={<Room />} />
+                        <Route key='Video' path='video' element={<VideoChat/>} />
                     </Routes>
                 </AnimatePresence>
             </QueryClientProvider>
