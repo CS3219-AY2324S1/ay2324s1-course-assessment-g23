@@ -24,7 +24,6 @@ function VideoChat() {
                 COMMUNICATION_API_URL + `/communication_video/${roomId}/${user.username}`
             )
             setSocket(socket)
-            console.log('test')
 
             return () => {
                 socket.close()
@@ -78,7 +77,6 @@ function VideoChat() {
 
     useEffect(() => {
         if (peerId == '') return
-        console.log(peerId)
         socket?.send(
             JSON.stringify({
                 event: 'join-video',
