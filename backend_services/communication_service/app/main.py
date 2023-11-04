@@ -1,4 +1,4 @@
-from data_classes import MessagePayload, Room, UserWebSocket
+from data_classes import MessagePayload, Room, VideoRoom, UserWebSocket
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -112,3 +112,24 @@ async def join_communication_channel(websocket: WebSocket, room_id: str, user_id
                         "sender": user_websocket.user_id,
                     })
             del room.clients[user_websocket.user_id]
+
+clients = []
+@app.websocket("/communication_video/{room_id}/{user_id}")
+async def join_video_channel(websocket: WebSocket, room_id: str, user_id: str):
+
+    await websocket.accept()
+    clients.append(websocket)
+
+    while True:
+        data = await websocket.receive_json()
+        event = data["event"]
+        if event == "join-video":
+            p2p_id = data["p2pId"]
+            for client in clients:
+                if client is not websocket:
+                    await client.send_json({
+                            "event": "join-video",
+                            "p2pId": p2p_id,
+                        })
+
+

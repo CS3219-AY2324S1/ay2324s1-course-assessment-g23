@@ -26,6 +26,7 @@
         "@uiw/react-codemirror": "^4.21.20",
         "framer-motion": "^10.16.4",
         "js-cookie": "^3.0.5",
+        "peerjs": "^1.5.1",
         "quill": "^1.3.7",
         "quill-delta": "^5.1.0",
         "react": "^18.2.0",

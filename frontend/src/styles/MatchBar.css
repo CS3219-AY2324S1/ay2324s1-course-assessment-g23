@@ -17,7 +17,10 @@
     width: 30%;
     display: flex;
     align-items: center;
-    box-shadow: rgba(0, 0, 0, 0.08) 0px 2px 4px, rgba(0, 0, 0, 0.08) 0px 4px 8px, rgba(0, 0, 0, 0.08) 0px 6px 12px;
+    box-shadow:
+        rgba(0, 0, 0, 0.08) 0px 2px 4px,
+        rgba(0, 0, 0, 0.08) 0px 4px 8px,
+        rgba(0, 0, 0, 0.08) 0px 6px 12px;
 }
 
 .match {
@@ -29,7 +32,10 @@
     flex-direction: column;
     justify-content: center;
     padding: 0;
-    box-shadow: rgba(0, 0, 0, 0.08) 0px 2px 4px, rgba(0, 0, 0, 0.08) 0px 4px 8px, rgba(0, 0, 0, 0.08) 0px 6px 12px;
+    box-shadow:
+        rgba(0, 0, 0, 0.08) 0px 2px 4px,
+        rgba(0, 0, 0, 0.08) 0px 4px 8px,
+        rgba(0, 0, 0, 0.08) 0px 6px 12px;
 }
 
 .match-title {
