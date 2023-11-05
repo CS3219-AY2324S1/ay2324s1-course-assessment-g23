@@ -174,6 +174,11 @@ const ChatBox: React.FC = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
     }
 
+    const closeVideoChat = () => {
+        setShowVideoChat(false)
+        setShowMessageChat(true)
+    }
+
     return (
         <motion.div ref={constraintsRef}>
             <motion.div
@@ -227,7 +232,7 @@ const ChatBox: React.FC = () => {
                                 <VideoChat
                                     toggleMessages={toggleMessages}
                                     messageIconStatus={showMessageChat}
-                                    closeVideoChat={() => setShowVideoChat(false)}
+                                    closeVideoChat={closeVideoChat}
                                 />
                             </div>
                         )}
