@@ -1,5 +1,6 @@
+import { CallEnd, Message, Mic, SpeakerNotesOff, Videocam } from '@mui/icons-material'
 import Peer from 'peerjs'
-import { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router'
 import { useCurrentUser } from '../stores/userStore.ts'
 
@@ -7,7 +8,17 @@ const COMMUNICATION_API_URL =
     `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}` +
     '/api/communication'
 
-function VideoChat() {
+interface VideoChatProps {
+    toggleMessages: () => void
+    messageIconStatus: boolean
+    closeVideoChat: () => void
+}
+
+const VideoChat: React.FC<VideoChatProps> = ({
+    toggleMessages,
+    messageIconStatus,
+    closeVideoChat,
+}) => {
     const [peerId, setPeerId] = useState('')
     const [remotePeerIdValue, setRemotePeerIdValue] = useState('')
     const remoteVideoRef = useRef(null)
@@ -107,12 +118,35 @@ function VideoChat() {
     }
 
     return (
-        <div className='App'>
-            <div>
-                <video ref={currentUserVideoRef} />
+        <div>
+            <div className='video-chat-box'>
+                <div className='user-video-container'>
+                    <video className='user-video' ref={currentUserVideoRef} />
+                </div>
+                <div className='remote-video-container'>
+                    <video className='remote-video' ref={remoteVideoRef} />
+                </div>
             </div>
-            <div>
-                <video ref={remoteVideoRef} />
+            <div className='video-controls'>
+                <button className='videocam-icon'>
+                    <Videocam />
+                </button>
+                <button className='mic-icon'>
+                    <Mic />
+                </button>
+                {messageIconStatus ? (
+                    <button className='message-icon' onClick={toggleMessages}>
+                        <Message />
+                    </button>
+                ) : (
+                    <button className='message-icon' onClick={toggleMessages}>
+                        <SpeakerNotesOff />
+                    </button>
+                )}
+
+                <button className='callend-icon' onClick={closeVideoChat}>
+                    <CallEnd />
+                </button>
             </div>
         </div>
     )
