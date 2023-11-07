@@ -10,5 +10,5 @@ RUN apk add --no-cache python3 postgresql-libs && \
     apk --purge del .build-deps
 
 COPY database_model.py database_model.py
-COPY /api_models /api_models
-RUN pip install /api_models
+COPY /shared_definitions /shared_definitions
+RUN pip install /shared_definitions

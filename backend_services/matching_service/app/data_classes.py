@@ -1,4 +1,5 @@
 import asyncio
+import pprint
 from dataclasses import dataclass
 from typing import Any, Literal, Optional, TypeAlias
 
@@ -30,6 +31,8 @@ class MatchResponse(BaseModel):
     is_matched: bool
     detail: str
     user_id: Optional[str] = None
+    room_id: Optional[str] = None
+    question_id: Optional[str] = None
 
 
 # Using normal dataclass instead of Pydantic because `WebSocket` and
@@ -40,7 +43,14 @@ class UserWebSocket:
 
     user_id: str
     websocket: WebSocket
+    access_token: str
     timeout_task: asyncio.Task = CANCELLED_TASK
+
+    def __str__(self) -> str:
+        return f'UserWebSocket(user_id="{self.user_id}")'
+
+    def __repr__(self) -> str:
+        return self.__str__()
 
 
 class UserWebSocketQueue:
@@ -76,4 +86,7 @@ class UserWebSocketQueue:
         return len(self._queue)
 
     def __str__(self) -> str:
-        return str(self._queue)
+        return pprint.pformat(self._queue, width=-1)
+
+    def __repr__(self) -> str:
+        return self.__str__()

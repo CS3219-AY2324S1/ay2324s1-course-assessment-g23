@@ -10,19 +10,34 @@
         "preview": "vite preview"
     },
     "dependencies": {
+        "@codemirror/lang-javascript": "^6.2.1",
+        "@codemirror/legacy-modes": "^6.3.3",
+        "@codemirror/state": "^6.3.1",
+        "@codemirror/view": "^6.21.4",
         "@emotion/react": "^11.11.1",
         "@emotion/styled": "^11.11.0",
         "@mui/icons-material": "^5.14.7",
         "@mui/material": "^5.14.7",
         "@tanstack/react-query": "^4.35.0",
         "@types/js-cookie": "^3.0.4",
+        "@uiw/codemirror-extensions-langs": "^4.21.20",
+        "@uiw/codemirror-theme-vscode": "^4.21.20",
+        "@uiw/codemirror-themes": "^4.21.20",
+        "@uiw/react-codemirror": "^4.21.20",
         "framer-motion": "^10.16.4",
         "js-cookie": "^3.0.5",
+        "peerjs": "^1.5.1",
+        "quill": "^1.3.7",
+        "quill-delta": "^5.1.0",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
-        "react-router-dom": "^6.15.0"
+        "react-markdown": "^9.0.0",
+        "react-router-dom": "^6.15.0",
+        "remark-gfm": "^4.0.0",
+        "zustand": "^4.4.6"
     },
     "devDependencies": {
+        "@types/quill": "^2.0.13",
         "@types/react": "^18.2.21",
         "@types/react-dom": "^18.2.7",
         "@typescript-eslint/eslint-plugin": "^6.0.0",
@@ -32,6 +47,7 @@
         "eslint-plugin-react-hooks": "^4.6.0",
         "eslint-plugin-react-refresh": "^0.4.3",
         "prettier": "^3.0.3",
+        "prettier-plugin-organize-imports": "^3.2.3",
         "typescript": "^5.0.2",
         "vite": "^4.4.5"
     }

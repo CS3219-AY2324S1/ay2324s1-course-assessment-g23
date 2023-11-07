@@ -26,7 +26,9 @@
 }
 
 .fade-out {
-    animation: slide-up 0.3s ease-in-out, fade-out 0.5s ease-in-out 2.2s;
+    animation:
+        slide-up 0.3s ease-in-out,
+        fade-out 0.5s ease-in-out 2.2s;
     position: absolute;
     min-width: 30rem;
     top: 2rem;

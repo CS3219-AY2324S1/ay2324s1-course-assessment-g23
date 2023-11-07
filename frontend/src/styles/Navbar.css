@@ -11,7 +11,7 @@ body {
     width: 100%;
     color: white;
     display: flex;
-    justify-content: space-between;
+    justify-content: left;
     align-items: center;
     gap: 2rem;
     padding: 0.5rem 3rem 0.5rem 3rem;
@@ -19,6 +19,7 @@ body {
 
 .site-title {
     font-size: 2rem;
+    align-self: flex-start;
 }
 
 .nav ul {
@@ -29,6 +30,7 @@ body {
     gap: 2rem;
     font-size: 1.25rem;
     color: #c2c2c2;
+    margin-left: auto;
 }
 
 .nav a {
@@ -71,8 +73,9 @@ body {
     padding: 10px 20px;
     width: 20rem;
     z-index: 2;
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1), 0 4px 4px 0 rgba(0, 0, 0, 0.09);
-
+    box-shadow:
+        0 2px 2px 0 rgba(0, 0, 0, 0.1),
+        0 4px 4px 0 rgba(0, 0, 0, 0.09);
 }
 
 .dropdown-menu.active {
@@ -146,4 +149,10 @@ body {
     justify-content: center;
     align-items: center;
     z-index: 1;
+}
+
+@media only screen and (max-width: 600px) {
+    .site-title {
+        display: none;
+    }
 }

@@ -1,8 +1,8 @@
+import React, { useState } from 'react'
 import type { UpdatedUser, User } from '../api/users'
 import { useUpdateUser } from '../stores/userStore'
 import '../styles/EditProfile.css'
-import React, { useState } from 'react'
-import AlertMessage from "./AlertMessage.tsx";
+import AlertMessage from './AlertMessage.tsx'
 
 interface EditProfileProps {
     user: User
@@ -28,7 +28,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, onClose }) => {
     }
 
     return (
-        <div className='dark-overlay' onClick={onClose} style={{zIndex:'2'}}>
+        <div className='dark-overlay' onClick={onClose} style={{ zIndex: '2' }}>
             <div className='edit-profile-card' onClick={(e) => e.stopPropagation()}>
                 <h2>Edit your profile</h2>
                 <form onSubmit={handleSubmit}>

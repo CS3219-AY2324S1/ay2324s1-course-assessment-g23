@@ -1,7 +1,7 @@
 import { ApiError } from './error'
 
 /** URL for users API. */
-const USERS_API_URL = 'http://localhost:8000/users'
+const USERS_API_URL = '/api/users'
 
 /** HTTP request headers for users API. */
 const USERS_API_HEADER = { 'Content-Type': 'application/json' }
@@ -30,6 +30,25 @@ export interface UpdatedUser {
 }
 
 /**
+ * Get currently logged-in user using JWT `access_token` cookie.
+ *
+ * @returns Resolves with the User object if found.
+ * @throws {ApiError} Throws an ApiError if the API response indicates an error.
+ */
+export async function getCurrentUser(): Promise<User> {
+    const response = await fetch(USERS_API_URL + '/user_me', {
+        method: 'GET',
+        headers: USERS_API_HEADER,
+        credentials: 'include',
+    })
+
+    if (!response.ok) throw await ApiError.parseResponse(response)
+
+    const data: User = await response.json()
+    return data
+}
+
+/**
  * Stores a new user.
  *
  * @param signupDetails - The signup details for creating a new user.
@@ -37,7 +56,7 @@ export interface UpdatedUser {
  * @throws {ApiError} Throws an ApiError if the API response indicates an error.
  */
 export async function storeUser(signupDetails: UserSignupDetails): Promise<string> {
-    const response = await fetch(USERS_API_URL, {
+    const response = await fetch(USERS_API_URL + '/users', {
         method: 'POST',
         headers: USERS_API_HEADER,
         body: JSON.stringify(signupDetails),
@@ -58,7 +77,7 @@ export async function storeUser(signupDetails: UserSignupDetails): Promise<strin
  * @throws {ApiError} Throws an ApiError if the API response indicates an error.
  */
 export async function getUser(id: string): Promise<User> {
-    const response = await fetch(`${USERS_API_URL}/${id}`, {
+    const response = await fetch(USERS_API_URL + `/users/${id}`, {
         method: 'GET',
         headers: USERS_API_HEADER,
         credentials: 'include',
@@ -77,7 +96,7 @@ export async function getUser(id: string): Promise<User> {
  * @throws {ApiError} Throws an ApiError if the API response indicates an error.
  */
 export async function getAllUsers(): Promise<User[]> {
-    const response = await fetch(`${USERS_API_URL}_all`, {
+    const response = await fetch(USERS_API_URL + '/users_all', {
         method: 'GET',
         headers: USERS_API_HEADER,
         credentials: 'include',
@@ -103,7 +122,7 @@ export async function updateUser(updatedUser: UpdatedUser): Promise<void> {
     // Attempt to update "role" first, as it requires a higher permission.
     // (ie. if fail to update role, it will fail to update everything)
     if (role) {
-        const response = await fetch(`${USERS_API_URL}_role/${user_id}`, {
+        const response = await fetch(USERS_API_URL + `/users_role/${user_id}`, {
             method: 'PUT',
             headers: USERS_API_HEADER,
             body: JSON.stringify({ role }),
@@ -116,7 +135,7 @@ export async function updateUser(updatedUser: UpdatedUser): Promise<void> {
     const hasNoValues = Object.values(rolelessUpdatedUser).every((x) => x === undefined)
     if (hasNoValues) return
 
-    const response = await fetch(`${USERS_API_URL}/${user_id}`, {
+    const response = await fetch(USERS_API_URL + `/users/${user_id}`, {
         method: 'PUT',
         headers: USERS_API_HEADER,
         body: JSON.stringify(rolelessUpdatedUser),
@@ -134,7 +153,7 @@ export async function updateUser(updatedUser: UpdatedUser): Promise<void> {
  * @throws {ApiError} Throws an ApiError if the API response indicates an error.
  */
 export async function deleteUser(id: string): Promise<void> {
-    const response = await fetch(`${USERS_API_URL}/${id}`, {
+    const response = await fetch(USERS_API_URL + `/users/${id}`, {
         method: 'DELETE',
         headers: USERS_API_HEADER,
         credentials: 'include',
@@ -150,7 +169,7 @@ export async function deleteUser(id: string): Promise<void> {
  * @throws {ApiError} Throws an ApiError if the API response indicates an error.
  */
 export async function deleteAllUsers(): Promise<void> {
-    const response = await fetch(`${USERS_API_URL}_all`, {
+    const response = await fetch(USERS_API_URL + `/users_all`, {
         method: 'DELETE',
         headers: USERS_API_HEADER,
         credentials: 'include',

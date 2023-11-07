@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import type { ApiError } from '../api/error'
-import { cancelMatch, getMatch } from '../api/matching'
+import { Match, cancelMatch, getMatch } from '../api/matching'
 import { Complexity } from '../api/questions'
-import { useSessionDetails } from './sessionStore'
+import { useCurrentUser } from './userStore'
 
 /**
  * Hook for getting the currently matched user's ID.
@@ -19,7 +19,7 @@ import { useSessionDetails } from './sessionStore'
  * ```
  */
 export function useMatch() {
-    return useQuery<string | null, ApiError>({
+    return useQuery<Match | null, ApiError>({
         queryKey: ['matching'],
         initialData: null,
         enabled: false,
@@ -52,12 +52,12 @@ export function useMatch() {
  * ```
  */
 export function useJoinQueue() {
-    const { data: session } = useSessionDetails()
+    const { data: user } = useCurrentUser()
     const queryClient = useQueryClient()
     return useMutation(
         async (complexity: Complexity) => {
-            if (!session) return null
-            return await getMatch({ user_id: session.user_id, complexity })
+            if (!user) return null
+            return await getMatch({ user_id: user.user_id, complexity })
         },
         {
             onSuccess: (data) => {
@@ -87,12 +87,12 @@ export function useJoinQueue() {
  * ```
  */
 export function useCancelQueue() {
-    const { data: session } = useSessionDetails()
+    const { data: user } = useCurrentUser()
     const queryClient = useQueryClient()
     return useMutation(
         async () => {
-            if (!session) return null
-            return await cancelMatch(session.user_id)
+            if (!user) return null
+            return await cancelMatch(user.user_id)
         },
         {
             onSuccess: () => {

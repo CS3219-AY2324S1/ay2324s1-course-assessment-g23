@@ -1,0 +1,465 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&family=Roboto:wght@300;400&display=swap');
+
+.horizontal-split-container {
+    display: flex;
+    width: 100%;
+    height: calc(100vh - 58px);
+    padding: 10px;
+    background-color: #202020;
+}
+
+.vertical-split-container {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    height: 100%;
+    width: 50%;
+}
+
+.pane {
+    height: auto;
+    box-sizing: border-box;
+    border-radius: 5px;
+    background-color: #303030;
+}
+
+.hidden-chat {
+    background: black;
+    border-radius: 10px 10px 0 0;
+    width: 350px;
+    height: 50px;
+    position: fixed;
+    padding: 0 20px;
+    bottom: 0;
+}
+
+.chat-header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+    height: 50px;
+    padding: 0 20px;
+    border-radius: 10px 10px 0 0;
+}
+
+.chat-box {
+    background: black;
+    border-radius: 10px 10px 0 0;
+    width: auto;
+    height: 720px;
+    position: fixed;
+    padding: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: row;
+    z-index: 3;
+}
+
+.chat-box form {
+    background-color: #c2c2c2;
+    height: 50px;
+    border-radius: 15px;
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.chat-box input {
+    background-color: transparent;
+    height: 30px;
+    width: 100%;
+    border-color: transparent;
+    color: #303030;
+}
+
+.chat-box input:focus {
+    outline: none;
+}
+
+.chat-background {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    overflow-x: auto;
+    align-items: center;
+    min-width: 280px;
+    width: 100%;
+    height: 380px;
+    background-color: white;
+    color: black;
+    padding: 5px 0;
+}
+
+.message-item-received {
+    flex-direction: column;
+    margin: 5px auto 5px 0;
+}
+
+.message-item-join-leave {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    flex-direction: column;
+    margin: 5px 0 5px auto;
+}
+
+.message-box-join-leave {
+    display: flex;
+    width: auto;
+    margin-right: auto;
+    margin-left: auto;
+    justify-self: center;
+    color: white;
+    background-color: #747bff;
+    padding: 2px 10px;
+    border-radius: 10px;
+    font-style: italic;
+    font-size: 12px;
+}
+
+.message-item-sent {
+    display: flex;
+    flex-direction: column;
+    margin: 5px 0 5px auto;
+    justify-content: right;
+}
+
+.text-box-received {
+    background-color: #00b8a2;
+    display: flex;
+    padding: 10px;
+    border-radius: 15px 15px 15px 5px;
+    color: white;
+    max-width: 300px;
+    margin: 0 10px;
+}
+
+.text-box-sent {
+    background-color: #fe375f;
+    display: flex;
+    padding: 10px;
+    border-radius: 15px 15px 5px 15px;
+    color: white;
+    max-width: 300px;
+    margin: 0 10px;
+}
+
+.sender-info {
+    display: flex;
+    justify-content: left;
+    margin: 0 10px;
+    font-style: italic;
+    font-size: 12px;
+    color: #575757;
+}
+
+.editor-container {
+    height: 100%;
+    background-color: #242424;
+    border-radius: 5px;
+    padding: 0;
+    overflow: scroll;
+}
+
+.ce-container {
+    display: flex;
+    font-size: 13px;
+    justify-content: right;
+    gap: 10px;
+    background-color: #303030;
+    border-radius: 5px;
+    margin-top: 10px;
+    padding: 5px 10px;
+}
+
+.error-output {
+    background-color: #3d1c1c;
+    color: #db4242;
+    height: 100%;
+    margin: 5px 0;
+    padding: 10px;
+    border-radius: 5px;
+    font-family: 'Roboto Mono', serif;
+}
+
+.code-output {
+    background-color: #242424;
+    height: 100%;
+    margin: 5px 0;
+    padding: 10px;
+    border-radius: 5px;
+    font-family: 'Roboto Mono', serif;
+}
+
+.problem-button {
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    margin: 0;
+    padding: 5px 12px;
+}
+
+.problem-button:hover {
+    background-color: #3d3d3d;
+}
+
+.editor-header {
+    display: flex;
+    align-items: center;
+    background-color: #303030;
+    height: auto;
+    padding: 5px 10px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: bolder;
+}
+
+.editor-header-controls {
+    display: flex;
+    margin-left: auto;
+    color: #c2c2c2;
+}
+
+.fullscreen-icon,
+.reset-icon,
+.zoom-in-icon,
+.zoom-out-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    margin: 0 5px;
+}
+
+.fullscreen-icon:hover,
+.reset-icon:hover,
+.zoom-in-icon:hover,
+.zoom-out-icon:hover {
+    color: white;
+}
+
+.box-shadow {
+    box-shadow:
+        rgba(0, 0, 0, 0.2) 0 2px 2px,
+        rgba(0, 0, 0, 0.1) 0 8px 12px,
+        rgba(0, 0, 0, 0.1) 0 8px 16px;
+}
+
+.reset-confirmation {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #303030;
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow:
+        rgba(0, 0, 0, 0.2) 0 2px 2px,
+        rgba(0, 0, 0, 0.1) 0 8px 12px,
+        rgba(0, 0, 0, 0.1) 0 8px 16px;
+}
+
+.reset-title {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    height: 50px;
+    padding: 0 10px;
+}
+
+.reset-buttons {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-top: 25px;
+}
+
+.dropdown-wrapper {
+    position: relative;
+    z-index: 1;
+}
+
+.dropdown-wrapper-question {
+    z-index: 1;
+    margin: 10px 0;
+    background-color: #3d3d3d;
+    min-width: auto;
+    border-radius: 5px;
+}
+
+.toggle-button {
+    position: relative;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 6px 10px;
+    width: auto;
+    height: 30px;
+    font-size: 16px;
+    text-align: left;
+    background: transparent;
+    gap: 5px;
+    color: #c2c2c2;
+    font-family: 'Roboto', sans-serif;
+}
+
+.toggle-button:active,
+.toggle-button:focus {
+    border-style: none;
+}
+
+.toggle-button:hover {
+    color: white;
+}
+
+.button-text {
+    width: 100%;
+}
+
+ul.listbox {
+    display: none;
+    position: absolute;
+    box-sizing: border-box;
+    background-color: #303030;
+    border: 1px solid #3d3d3d;
+    width: auto;
+    max-height: 300px;
+    overflow: scroll;
+    font-size: 15px;
+    font-weight: bold;
+    text-align: left;
+    list-style: none;
+    overflow-y: auto;
+    padding: 0;
+    border-radius: 5px;
+    margin-top: 4px;
+    font-family: 'Roboto', sans-serif;
+}
+
+.listbox.isOpen {
+    display: block;
+}
+
+.list-option {
+    cursor: pointer;
+    text-align: left;
+    padding: 10px 20px;
+    width: auto;
+}
+
+.list-option.highlighted,
+.list-option:hover,
+.list-option:focus {
+    background-color: #3d3d3d;
+}
+
+#complexity-Easy {
+    color: #00b8a2;
+}
+
+#complexity-Medium {
+    color: #febf1d;
+}
+
+#complexity-Hard {
+    color: #fe375f;
+}
+
+.call-icon {
+    background-color: transparent;
+    color: #303030;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+    padding: 5px;
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.call-icon:hover {
+    background-color: white;
+}
+
+.video-chat-box {
+    position: relative;
+    width: 480px;
+    height: 360px;
+    background-color: transparent;
+    margin: 0 5px 0 5px;
+    bottom: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    border-radius: 15px;
+    overflow: hidden;
+    z-index: 3;
+    box-shadow:
+        rgba(0, 0, 0, 0.08) 0 2px 4px,
+        rgba(0, 0, 0, 0.08) 0 4px 8px,
+        rgba(0, 0, 0, 0.08) 0 6px 12px;
+}
+
+.remote-video-container {
+    position: absolute;
+    background-color: #3d3d3d;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.user-video-container {
+    position: absolute;
+    background-color: #3d3d3d;
+    border-radius: 10px;
+    overflow: hidden;
+    bottom: 10px;
+    right: 10px;
+    width: 40%;
+    height: 40%;
+    z-index: 2;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+}
+
+.user-video,
+.remote-video {
+    height: 100%;
+    width: 100%;
+    -ms-transform: scaleX(-1);
+    transform: scaleX(-1);
+}
+
+.video-controls {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 5px;
+}
+
+.videocam-icon,
+.mic-icon,
+.message-icon {
+    background-color: #3d3d3d;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 30px;
+    padding: 10px;
+    margin: 10px;
+}
+
+.callend-icon {
+    background-color: #fe375f;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 30px;
+    padding: 10px 20px;
+    margin: 10px;
+}

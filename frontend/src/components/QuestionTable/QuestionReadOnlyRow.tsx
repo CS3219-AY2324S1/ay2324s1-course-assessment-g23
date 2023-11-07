@@ -1,20 +1,20 @@
-import React, { useState } from 'react'
+import DeleteIcon from '@mui/icons-material/Delete'
+import EditIcon from '@mui/icons-material/Edit'
 import {
-    Button,
     Dialog,
     DialogActions,
     DialogContent,
-    DialogContentText,
     DialogTitle,
     IconButton,
-    TextField,
     Tooltip,
     Typography,
 } from '@mui/material'
-import EditIcon from '@mui/icons-material/Edit'
-import DeleteIcon from '@mui/icons-material/Delete'
-import { type Question, updateQuestion } from '../../api/questions.ts'
+import React, { useState } from 'react'
+import Markdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+import { type Question } from '../../api/questions.ts'
 import { useUpdateQuestion } from '../../stores/questionStore.ts'
+import '../../styles/QuestionTable.css'
 import AlertMessage from '../AlertMessage.tsx'
 
 interface ReadOnlyRowProps {
@@ -33,10 +33,12 @@ const QuestionReadOnlyRow: React.FC<ReadOnlyRowProps> = ({
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [editedDescription, setEditedDescription] = useState(question.description)
     const updateQuestionMutation = useUpdateQuestion()
+    const [isWrite, setIsWrite] = useState(true)
 
     const openModal = () => {
         setEditedDescription(question.description)
         setIsModalOpen(true)
+        setIsWrite(true)
     }
 
     const handleClose = () => {
@@ -52,12 +54,25 @@ const QuestionReadOnlyRow: React.FC<ReadOnlyRowProps> = ({
     return (
         <>
             <tr>
-                <td>
-                    <Tooltip title={<p>{question.question_id}</p>} arrow>
+                <td className='id-column'>
+                    <Tooltip
+                        title={<p>{question.question_id}</p>}
+                        placement='bottom-start'
+                        componentsProps={{
+                            tooltip: {
+                                sx: {
+                                    backgroundColor: '#c2c2c2',
+                                    color: '#242424',
+                                    fontSize: '15px',
+                                    maxWidth: '100%',
+                                },
+                            },
+                        }}
+                    >
                         <Typography
                             style={{
                                 cursor: 'pointer',
-                                maxWidth: '10ch', // Adjust the maximum width as needed
+                                maxWidth: '8ch', // Adjust the maximum width as needed
                                 overflow: 'hidden',
                                 whiteSpace: 'nowrap',
                                 textOverflow: 'ellipsis',
@@ -67,28 +82,21 @@ const QuestionReadOnlyRow: React.FC<ReadOnlyRowProps> = ({
                         </Typography>
                     </Tooltip>
                 </td>
-                <td
-                    onClick={openModal}
-                    style={{
-                        cursor: 'pointer',
-                        textDecoration: 'underline',
-                        fontWeight: 'bold',
-                    }}
-                >
-                    {question.title}
+                <td onClick={openModal} className='title-column'>
+                    <p>{question.title}</p>
                 </td>
                 <td>{question.category}</td>
                 <td className={`complexity-color-${question.complexity}`}>{question.complexity}</td>
                 {hasActions && (
-                    <td>
+                    <td className='action-column'>
                         <IconButton
-                            sx={{ color: '#c2c2c2', paddingLeft: '0' }}
+                            sx={{ color: '#c2c2c2', padding: '0' }}
                             onClick={(event) => handleEditClick(event, question)}
                         >
                             <EditIcon />
                         </IconButton>
                         <IconButton
-                            sx={{ color: '#c2c2c2' }}
+                            sx={{ color: '#c2c2c2', padding: '0 0 0 10px' }}
                             onClick={() => handleDeleteClick(question.question_id)}
                         >
                             <DeleteIcon />
@@ -99,96 +107,67 @@ const QuestionReadOnlyRow: React.FC<ReadOnlyRowProps> = ({
             <Dialog
                 open={isModalOpen}
                 onClose={handleClose}
-                aria-labelledby='alert-dialog-title'
-                aria-describedby='alert-dialog-description'
                 maxWidth='md'
                 PaperProps={{
                     sx: { borderRadius: '1rem', backgroundColor: '#242424', padding: '1rem' },
                 }}
             >
-                <DialogTitle
-                    style={{
-                        fontWeight: 'bold',
-                        backgroundColor: '#242424',
-                        color: 'white',
-                        width: '700px',
-                    }}
-                >
-                    {hasActions ? 'Edit Description' : 'Description'}
+                <DialogTitle style={{ color: 'white', paddingLeft: '32px' }}>
+                    {question.title}
                 </DialogTitle>
                 <DialogContent style={{ backgroundColor: '#242424' }}>
                     {hasActions ? (
-                        <TextField
-                            style={{ width: '100%' }}
-                            fullWidth
-                            multiline
-                            rows={10}
-                            value={editedDescription}
-                            onChange={(e) => setEditedDescription(e.target.value)}
-                            InputProps={{
-                                style: { color: 'white', borderColor: 'white' },
-                            }}
-                        />
+                        <>
+                            <div className='description-header'>
+                                <p>Description</p>
+                                <button
+                                    onClick={() => setIsWrite(true)}
+                                    className={`write-button${isWrite ? '-active' : ''}`}
+                                    style={{ marginLeft: 'auto' }}
+                                    type='button'
+                                >
+                                    Edit
+                                </button>
+                                <button
+                                    onClick={() => setIsWrite(false)}
+                                    className={`preview-button${!isWrite ? '-active' : ''}`}
+                                    type='button'
+                                >
+                                    Preview
+                                </button>
+                            </div>
+                            {isWrite ? (
+                                <textarea
+                                    className='edit-description-text'
+                                    value={editedDescription}
+                                    onChange={(e) => setEditedDescription(e.target.value)}
+                                />
+                            ) : (
+                                <div className='markdown-container' style={{ padding: ' 0 10px' }}>
+                                    <Markdown className='markdown' remarkPlugins={[remarkGfm]}>
+                                        {editedDescription}
+                                    </Markdown>
+                                </div>
+                            )}
+                        </>
                     ) : (
-                        <DialogContentText id='alert-dialog-description' style={{ color: 'white' }}>
+                        <Markdown className='markdown' remarkPlugins={[remarkGfm]}>
                             {editedDescription}
-                        </DialogContentText>
+                        </Markdown>
                     )}
                 </DialogContent>
                 {hasActions && (
                     <DialogActions style={{ backgroundColor: '#242424' }}>
-                        <Button
-                            disableFocusRipple
-                            disableRipple
-                            size='medium'
-                            onClick={handleClose}
-                            style={{
-                                color: 'white',
-                                paddingLeft: '25px',
-                                paddingRight: '25px',
-                                marginRight: '15px',
-                                textTransform: 'none',
-                                width: '5rem',
-                                maxWidth: '700px',
-                                backgroundColor: '#303030',
-                            }}
-                            sx={{
-                                ml: 1,
-                                '&.MuiButtonBase-root:hover': {
-                                    bgcolor: 'transparent',
-                                },
-                            }}
-                        >
+                        <button className='cancel-button' onClick={handleClose}>
                             <Typography variant='subtitle1' sx={{ fontWeight: 'bold' }}>
                                 Cancel
                             </Typography>
-                        </Button>
-                        <Button
-                            disableFocusRipple
-                            disableRipple
-                            size='medium'
-                            onClick={handleEditDescription}
-                            style={{
-                                color: 'white',
-                                paddingLeft: '25px',
-                                paddingRight: '25px',
-                                marginRight: '15px',
-                                textTransform: 'none',
-                                width: '5rem',
-                                maxWidth: '700px',
-                                backgroundColor: '#238636',
-                            }}
-                            sx={{
-                                ml: 1,
-                                '&.MuiButtonBase-root:hover': {
-                                    bgcolor: 'transparent',
-                                },
-                            }}
-                        >
+                        </button>
+                        <button className='save-button' onClick={handleEditDescription}>
                             <Typography variant='subtitle1' sx={{ fontWeight: 'bold' }}>
                                 Save
                             </Typography>
-                        </Button>
+                        </button>
                     </DialogActions>
                 )}
 

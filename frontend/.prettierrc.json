@@ -4,6 +4,6 @@
     "semi": false,
     "singleQuote": true,
     "jsxSingleQuote": true,
-    "endOfLine": "crlf",
-    "printWidth": 100
+    "printWidth": 100,
+    "plugins": ["prettier-plugin-organize-imports"]
 }

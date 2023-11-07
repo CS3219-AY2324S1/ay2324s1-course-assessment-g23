@@ -1,11 +1,11 @@
 import React, { ChangeEvent, FormEvent, Fragment, useState } from 'react'
-import UserEditableRow from './UserEditableRow.tsx'
 import type { UpdatedUser, User, UserSignupDetails } from '../../api/users.ts'
 import { useAllUsers, useDeleteUser, useStoreUser, useUpdateUser } from '../../stores/userStore.ts'
-import UserReadOnlyRow from './UserReadOnlyRow.tsx'
+import '../../styles/AlertMessage.css'
 import '../../styles/UserTable.css'
 import AlertMessage from '../AlertMessage.tsx'
-import '../../styles/AlertMessage.css'
+import UserEditableRow from './UserEditableRow.tsx'
+import UserReadOnlyRow from './UserReadOnlyRow.tsx'
 
 export const UserTable: React.FC = () => {
     const { data: users } = useAllUsers()

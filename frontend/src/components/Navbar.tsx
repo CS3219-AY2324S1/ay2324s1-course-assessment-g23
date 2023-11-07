@@ -1,13 +1,12 @@
 import React, { useState } from 'react'
-import '../styles/Navbar.css'
 import { Link, useMatch, useResolvedPath } from 'react-router-dom'
+import { useLogoutUser } from '../stores/sessionStore.ts'
+import { useCurrentUser } from '../stores/userStore.ts'
+import '../styles/Navbar.css'
 import EditProfile from './EditProfile.tsx'
-import { useLogoutUser, useSessionDetails } from '../stores/sessionStore.ts'
-import { useUser } from '../stores/userStore.ts'
 
 const Navbar: React.FC = () => {
-    const { data: sessionDetails } = useSessionDetails()
-    const { data: user } = useUser(sessionDetails?.user_id)
+    const { data: user } = useCurrentUser()
     const logoutUserMutation = useLogoutUser()
     const [dropDownOpen, setDropDownOpen] = useState(false)
     const [editProfileOpen, setEditProfileOpen] = useState(false)
@@ -24,14 +23,13 @@ const Navbar: React.FC = () => {
     return (
         <>
             <nav className='nav'>
+                <img src='../../peerprep.png' width='40' height='40' alt='PeerPrep Logo' />
                 <Link to='/questions' className='site-title'>
                     PeerPrep
                 </Link>
                 <ul>
                     <CustomLink to='/questions'>Questions</CustomLink>
-                    {sessionDetails?.role === 'maintainer' && (
-                        <CustomLink to='/users'>Users</CustomLink>
-                    )}
+                    {user?.role === 'maintainer' && <CustomLink to='/users'>Users</CustomLink>}
                     <li
                         className={`profile-button ${dropDownOpen ? 'active' : 'inactive'}`}
                         onClick={() => setDropDownOpen(!dropDownOpen)}

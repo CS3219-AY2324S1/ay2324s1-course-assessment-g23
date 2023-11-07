@@ -1,14 +1,79 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import Cookies from 'js-cookie'
+import { refreshAccessToken } from '../api/auth'
+import { ApiError } from '../api/error'
 import {
-    getUser,
+    User,
+    deleteAllUsers,
+    deleteUser,
     getAllUsers,
+    getCurrentUser,
+    getUser,
     storeUser,
     updateUser,
-    deleteUser,
-    deleteAllUsers,
-    User,
 } from '../api/users'
-import { ApiError } from '../api/error'
+import { ACCESS_TOKEN_COOKIE_NAME, REFRESH_TOKEN_COOKIE_NAME } from './sessionStore'
+
+/**
+ * Hook for getting currently logged-in user's details from backend.
+ *
+ * If not logged in, the user will be `null`.
+ *
+ * The fetching of the user from the backend is done automatically.
+ *
+ * @example
+ * ```ts
+ * const MyComponent: React.FC = () => {
+ *     const { data: user } = useCurrentUser()
+ *     // where `user: User`
+ *     // ... rest of the code ...
+ * }
+ * ```
+ */
+export function useCurrentUser() {
+    return useQuery<User | null, ApiError>({
+        queryKey: ['user', 'me'],
+        queryFn: async () => {
+            const hasRefreshToken = Cookies.get(REFRESH_TOKEN_COOKIE_NAME) !== undefined
+            if (!hasRefreshToken) {
+                Cookies.remove(ACCESS_TOKEN_COOKIE_NAME)
+                return null
+            }
+
+            const isHTTP401 = (error: unknown): error is ApiError =>
+                error instanceof ApiError && error.status === 401
+            try {
+                const hasAccessToken = Cookies.get(ACCESS_TOKEN_COOKIE_NAME) !== undefined
+                if (!hasAccessToken) await refreshAccessToken()
+            } catch (error) {
+                if (!isHTTP401(error)) throw error
+
+                Cookies.remove(REFRESH_TOKEN_COOKIE_NAME)
+                Cookies.remove(ACCESS_TOKEN_COOKIE_NAME)
+                return null
+            }
+
+            try {
+                return await getCurrentUser()
+            } catch (error) {
+                if (!isHTTP401(error)) throw error
+
+                try {
+                    Cookies.remove(ACCESS_TOKEN_COOKIE_NAME)
+                    await refreshAccessToken()
+                    return await getCurrentUser()
+                } catch (error) {
+                    if (!isHTTP401(error)) throw error
+
+                    Cookies.remove(REFRESH_TOKEN_COOKIE_NAME)
+                    Cookies.remove(ACCESS_TOKEN_COOKIE_NAME)
+                    return null
+                }
+            }
+        },
+        initialData: null,
+    })
+}
 
 /**
  * Hook for getting users state from backend.
@@ -35,7 +100,7 @@ export function useAllUsers() {
 /**
  * Hook for getting a specific user's state from the backend using its ID.
  *
- * If no user ID is given, the user will be `undefined` (without throwing
+ * If no user ID is given, the user will be `null` (without throwing
  * errors). This is incase the user ID might not yet be known.
  *
  * The fetching of the user from the backend is done automatically.

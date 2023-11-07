@@ -1,7 +1,7 @@
 import { ApiError } from './error'
 
 /** URL for question bank API. */
-const QUESTION_API_URL = 'http://localhost:8000/questions'
+const QUESTION_API_URL = '/api/questions'
 
 /** HTTP request headers for question bank API. */
 const QUESTION_API_HEADER = { 'Content-Type': 'application/json' }
@@ -25,7 +25,7 @@ export interface Question {
  * @throws {ApiError} Throws an ApiError if the API response indicates an error.
  */
 export async function storeQuestion(question: Omit<Question, 'question_id'>): Promise<string> {
-    const response = await fetch(QUESTION_API_URL, {
+    const response = await fetch(QUESTION_API_URL + '/questions', {
         method: 'POST',
         headers: QUESTION_API_HEADER,
         body: JSON.stringify(question),
@@ -46,7 +46,7 @@ export async function storeQuestion(question: Omit<Question, 'question_id'>): Pr
  * @throws {ApiError} Throws an ApiError if the API response indicates an error.
  */
 export async function getQuestion(id: string): Promise<Question> {
-    const response = await fetch(`${QUESTION_API_URL}/${id}`, {
+    const response = await fetch(QUESTION_API_URL + `/questions/${id}`, {
         method: 'GET',
         headers: QUESTION_API_HEADER,
         credentials: 'include',
@@ -65,7 +65,7 @@ export async function getQuestion(id: string): Promise<Question> {
  * @throws {ApiError} Throws an ApiError if the API response indicates an error.
  */
 export async function getAllQuestions(): Promise<Question[]> {
-    const response = await fetch(`${QUESTION_API_URL}_all`, {
+    const response = await fetch(QUESTION_API_URL + `/questions_all`, {
         method: 'GET',
         headers: QUESTION_API_HEADER,
         credentials: 'include',
@@ -87,7 +87,7 @@ export async function getAllQuestions(): Promise<Question[]> {
 export async function updateQuestion(
     updatedQuestion: Pick<Question, 'question_id'> & Partial<Omit<Question, 'question_id'>>
 ): Promise<void> {
-    const response = await fetch(QUESTION_API_URL, {
+    const response = await fetch(QUESTION_API_URL + '/questions', {
         method: 'PUT',
         headers: QUESTION_API_HEADER,
         body: JSON.stringify(updatedQuestion),
@@ -105,7 +105,7 @@ export async function updateQuestion(
  * @throws {ApiError} Throws an ApiError if the API response indicates an error.
  */
 export async function deleteQuestion(id: string): Promise<void> {
-    const response = await fetch(`${QUESTION_API_URL}/${id}`, {
+    const response = await fetch(QUESTION_API_URL + `/questions/${id}`, {
         method: 'DELETE',
         headers: QUESTION_API_HEADER,
         credentials: 'include',
@@ -121,7 +121,7 @@ export async function deleteQuestion(id: string): Promise<void> {
  * @throws {ApiError} Throws an ApiError if the API response indicates an error.
  */
 export async function deleteAllQuestions(): Promise<void> {
-    const response = await fetch(`${QUESTION_API_URL}_all`, {
+    const response = await fetch(QUESTION_API_URL + '/questions_all', {
         method: 'DELETE',
         headers: QUESTION_API_HEADER,
         credentials: 'include',

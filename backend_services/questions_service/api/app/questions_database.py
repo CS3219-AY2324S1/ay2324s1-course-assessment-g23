@@ -1,5 +1,6 @@
-from database_model import Database
 import os
+
+from database_model import Database
 
 
 def _get_env_variable(key: str) -> str:

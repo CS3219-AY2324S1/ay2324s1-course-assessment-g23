@@ -1,7 +1,8 @@
-from dataclasses import dataclass
-import psycopg2
 import traceback
-from fastapi import HTTPException
+from dataclasses import dataclass
+
+import psycopg2
+from fastapi import HTTPException, status
 
 
 @dataclass
@@ -15,11 +16,12 @@ class Database:
     def _connect(self):
         try:
             conn = psycopg2.connect(
-                host = self.host,
-                port = self.port,
-                database = self.database,
-                user = self.user,
-                password = self.password)
+                host=self.host,
+                port=self.port,
+                database=self.database,
+                user=self.user,
+                password=self.password,
+            )
             return conn
         except Exception as e:
             traceback.print_exc()
@@ -38,9 +40,9 @@ class Database:
 
         except psycopg2.DatabaseError as e:
             conn.rollback()
-            raise HTTPException(status_code=500, detail=str(e))
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
         except Exception as e:
-            raise HTTPException(status_code=500, detail=str(e))
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
     def execute_sql_read_fetchone(self, sql_command: str, params: tuple | None = None):
         conn = self._connect()
@@ -53,9 +55,9 @@ class Database:
                 return cur.fetchone()
 
         except psycopg2.DatabaseError as e:
-            raise HTTPException(status_code=500, detail=str(e))
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
         except Exception as e:
-            raise HTTPException(status_code=500, detail=str(e))
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
     def execute_sql_read_fetchall(self, sql_command: str, params: tuple | None = None):
         conn = self._connect()
@@ -68,6 +70,6 @@ class Database:
                 return cur.fetchall()
 
         except psycopg2.DatabaseError as e:
-            raise HTTPException(status_code=500, detail=str(e))
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
         except Exception as e:
-            raise HTTPException(status_code=500, detail=str(e))
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))

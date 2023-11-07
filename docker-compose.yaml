@@ -1,46 +1,47 @@
 version: "3"
 services:
+  api_gateway:
+    container_name: api_gateway
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx_params_handle_websockets:/etc/nginx/nginx_params_handle_websockets:ro
+    depends_on:
+      - users_api
+      - questions_api
+      - matching_api
+      - collaboration_api
+      - communication_api
+    networks:
+      - client-side
+      - backend-apis
   frontend:
     container_name: frontend
     build:
       context: ./frontend
+    image: peerprep_frontend
     ports:
-      - 80:80
+      - 8006:8006
     networks:
       - client-side
   base_api:
     build:
       context: ./backend_services
       dockerfile: ./Dockerfile
+    image: peerprep_base_api
     container_name: base_api
     networks:
       - backend-apis
-  api_gateway:
-    build:
-      context: ./backend_services/api_gateway
-      dockerfile: ../API_Dockerfile
-    container_name: api_gateway
-    networks:
-      - client-side
-      - backend-apis
-    ports:
-      - 8000:8000
-    environment:
-      - USERS_SERVICE_HOST=users_api
-      - SESSIONS_SERVICE_HOST=users_api
-      - QUESTIONS_SERVICE_HOST=questions_api
-      - MATCHING_SERVICE_HOST=matching_api
-      - API_PORT=8000
-    depends_on:
-      - base_api
-      - users_api
-      - questions_api
-      - matching_api
+    env_file:
+      - ./backend.conf
   users_api:
     build:
       context: ./backend_services/users_service/api
       dockerfile: ../../API_Dockerfile
     container_name: users_api
+    image: peerprep_users_api
     ports:
       - 8001:8000
     networks:
@@ -49,16 +50,18 @@ services:
     environment:
       - POSTGRES_HOST=users_database
       - POSTGRES_PORT=5432
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - JWT_RS256_PRIVATE_KEY=${JWT_RS256_PRIVATE_KEY}
     depends_on:
       - users_database
       - base_api
+    env_file:
+      - ./backend.conf
   questions_api:
     build:
       context: ./backend_services/questions_service/api
       dockerfile: ../../API_Dockerfile
+    image: peerprep_questions_api
     container_name: questions_api
     ports:
       - 8002:8000
@@ -68,16 +71,47 @@ services:
     environment:
       - POSTGRES_HOST=questions_database
       - POSTGRES_PORT=5432
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     depends_on:
       - questions_database
       - base_api
+    env_file:
+      - ./backend.conf
+  collaboration_api:
+    build:
+      context: ./backend_services/collaboration_service
+      dockerfile: Dockerfile
+    image: peerprep_collaboration_api
+    container_name: collaboration_api
+    ports:
+      - 8004:8000
+    networks:
+      - backend-apis
+      - collaboration
+    depends_on:
+      - base_api
+    env_file:
+      - ./backend.conf
+  communication_api:
+    build:
+      context: ./backend_services/communication_service
+      dockerfile: Dockerfile
+    image: peerprep_communication_api
+    container_name: communication_api
+    ports:
+      - 8005:8000
+    networks:
+      - backend-apis
+      - communication
+    depends_on:
+      - base_api
+    env_file:
+      - ./backend.conf
   matching_api:
     build:
       context: ./backend_services/matching_service
       dockerfile: Dockerfile
+    image: peerprep_matching_api
     container_name: matching_api
     ports:
       - 8003:8003
@@ -86,10 +120,13 @@ services:
       - matching-queue
     depends_on:
       - base_api
+    env_file:
+      - ./backend.conf
   users_database:
     build:
       context: ./backend_services/users_service/database
       dockerfile: ../../DB_Dockerfile
+    image: peerprep_users_database
     container_name: users_database
     ports:
       - 5432:5432
@@ -98,14 +135,14 @@ services:
     volumes:
       - users-data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - PGDATA=${PGDATA}
+    env_file:
+      - ./backend.conf
   questions_database:
     build:
       context: ./backend_services/questions_service/database
       dockerfile: ../../DB_Dockerfile
+    image: peerprep_questions_database
     container_name: questions_database
     ports:
       - 5433:5432
@@ -114,39 +151,13 @@ services:
     volumes:
       - questions-data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - PGDATA=${PGDATA}
-  rabbitmq:
-    image: rabbitmq:3.12-management
-    container_name: RabbitMQ
-    ports:
-      - "5672:5672"  # RabbitMQ default AMQP port
-      - "15672:15672"  # RabbitMQ Management Console port
-    environment:
-      RABBITMQ_DEFAULT_USER: guest
-      RABBITMQ_DEFAULT_PASS: guest
-    volumes:
-      - rabbitmq-data:/var/lib/rabbitmq
-    networks:
-      - matching-queue
-  rmq_server:
-    build:
-      context: ./backend_services/matching_service/rmq_server
-      dockerfile: Dockerfile
-    container_name: rmq_server
-    networks:
-      - matching-queue
-    depends_on:
-      - matching_api
-      - rabbitmq
+    env_file:
+      - ./backend.conf
 volumes:
   users-data:
     external: true
   questions-data:
-    external: true
-  rabbitmq-data:
     external: true
 networks:
   users:
@@ -154,3 +165,5 @@ networks:
   client-side:
   backend-apis:
   matching-queue:
+  collaboration:
+  communication:
