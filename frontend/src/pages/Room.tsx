@@ -7,7 +7,6 @@ import ConfirmationBox from '../components/CollaborationRoom/ConfirmationBox.tsx
 import QuestionDescription from '../components/CollaborationRoom/QuestionDescription.tsx'
 import RoomNavBar from '../components/CollaborationRoom/RoomNavBar.tsx'
 import '../styles/Room.css'
-import VideoChat from '../components/VideoChat.tsx'
 
 export const Room = () => {
     const [showConfirmation, setShowConfirmation] = useState(false)

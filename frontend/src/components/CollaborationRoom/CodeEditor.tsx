@@ -1,15 +1,14 @@
-
 import CodeMirror from '@uiw/react-codemirror'
 import 'quill/dist/quill.snow.css'
 
 import { Error, Fullscreen, Restore, ZoomIn, ZoomOut } from '@mui/icons-material'
 import { Tooltip } from '@mui/material'
-import { io, Socket } from "socket.io-client";
-import {getDocument, getLangExtension, peerExtension } from '../../stores/codeEditorStore.ts'
 import { vscodeDarkInit } from '@uiw/codemirror-theme-vscode'
 import { AnimatePresence, motion } from 'framer-motion'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router'
+import { Socket, io } from 'socket.io-client'
+import { getDocument, getLangExtension, peerExtension } from '../../stores/codeEditorStore.ts'
 import LanguageSelect from './LanguageSelect.tsx'
 
 export const CodeEditor: React.FC = () => {
@@ -22,17 +21,17 @@ export const CodeEditor: React.FC = () => {
     const [fontSize, setFontSize] = useState(14) // Default font size for the editor
 
     useEffect(() => {
-        const socket = io("http://localhost:8004", {
-            path: `/room`
-            });
+        const socket = io('http://localhost:8004', {
+            path: `/room`,
+        })
         setSocket(socket)
 
         return () => {
-            socket.off('connect');
-            socket.off('disconnect');
-            socket.off('pullUpdateResponse');
-            socket.off('pushUpdateResponse');
-            socket.off('getDocumentResponse');
+            socket.off('connect')
+            socket.off('disconnect')
+            socket.off('pullUpdateResponse')
+            socket.off('pushUpdateResponse')
+            socket.off('getDocumentResponse')
         }
     }, [])
 
@@ -40,21 +39,20 @@ export const CodeEditor: React.FC = () => {
         if (socket == null) return
 
         const fetchDoc = async () => {
-            const {version, doc} = await getDocument(socket)
+            const { version, doc } = await getDocument(socket)
             setVersion(version)
             setDoc(doc.toString())
         }
 
-        socket.on("connect", () => {
-            console.log("Collab editor connected")
+        socket.on('connect', () => {
+            console.log('Collab editor connected')
             socket.emit('join-room', roomId)
             fetchDoc()
-          });
-
-        socket.on("disconnect", () => {
-            console.log("Collab editor connection closed")
         })
 
+        socket.on('disconnect', () => {
+            console.log('Collab editor connection closed')
+        })
     }, [socket])
 
     const resetCode = () => {
@@ -181,21 +179,26 @@ export const CodeEditor: React.FC = () => {
                     </Tooltip>
                 </div>
             </div>
-            {socket && version != null?
-            <div style={{ fontSize: `${fontSize}px` }}>
-            <CodeMirror
-                value={doc}
-                onChange={handleOnChange}
-                extensions={[getLangExtension(selectedLanguage), peerExtension(socket, version)]}
-                theme={vscodeDarkInit({
-                    settings: {
-                        background: '#242424',
-                        gutterBackground: '#242424',
-                        lineHighlight: 'transparent',
-                    },
-                })}
-                height='auto'
-            /></div> : null}
+            {socket && version != null ? (
+                <div style={{ fontSize: `${fontSize}px` }}>
+                    <CodeMirror
+                        value={doc}
+                        onChange={handleOnChange}
+                        extensions={[
+                            getLangExtension(selectedLanguage),
+                            peerExtension(socket, version),
+                        ]}
+                        theme={vscodeDarkInit({
+                            settings: {
+                                background: '#242424',
+                                gutterBackground: '#242424',
+                                lineHighlight: 'transparent',
+                            },
+                        })}
+                        height='auto'
+                    />
+                </div>
+            ) : null}
         </div>
     )
 }
