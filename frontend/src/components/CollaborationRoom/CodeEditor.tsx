@@ -1,11 +1,12 @@
-import CodeMirror from '@uiw/react-codemirror'
+import CodeMirror, {useCodeMirror} from '@uiw/react-codemirror'
 import 'quill/dist/quill.snow.css'
+import {EditorState, Compartment} from "@codemirror/state"
 
 import { Error, Fullscreen, Restore, ZoomIn, ZoomOut } from '@mui/icons-material'
 import { Tooltip } from '@mui/material'
 import { vscodeDarkInit } from '@uiw/codemirror-theme-vscode'
 import { AnimatePresence, motion } from 'framer-motion'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useParams } from 'react-router'
 import { Socket, io } from 'socket.io-client'
 import { useShallow } from 'zustand/react/shallow'
@@ -17,6 +18,7 @@ export const CodeEditor: React.FC = () => {
     const { roomId } = useParams()
     const [socket, setSocket] = useState<Socket | null>(null)
     const [doc, setDoc] = useDocStore(useShallow((state) => [state.doc, state.setDoc]))
+    const [value, setValue] = useState('')
     const [version, setVersion] = useState<number | null>(null)
     const [showResetConfirmation, setShowResetConfirmation] = useState(false)
     const [fontSize, setFontSize] = useState(14) // Default font size for the editor
@@ -43,7 +45,7 @@ export const CodeEditor: React.FC = () => {
         const fetchDoc = async () => {
             const { version, doc } = await getDocument(socket)
             setVersion(version)
-            setDoc(doc.toString())
+            setValue(doc.toString())
         }
 
         socket.on('connect', () => {
@@ -59,8 +61,6 @@ export const CodeEditor: React.FC = () => {
 
     const resetCode = () => {
         setShowResetConfirmation(false)
-        setDoc('')
-        console.log('reset')
     }
 
     const zoomIn = () => {
@@ -71,9 +71,6 @@ export const CodeEditor: React.FC = () => {
         setFontSize((prevFontSize) => Math.max(prevFontSize - 4, 16)) // Prevents font size from going below 4px
     }
 
-    const handleOnChange = (val: string, viewUpdate: any) => {
-        setDoc(val)
-    }
 
     function toggleFullScreen() {
         if (!document.fullscreenElement) {
@@ -88,6 +85,12 @@ export const CodeEditor: React.FC = () => {
             }
         }
     }
+
+    const sendChanges = EditorState.transactionExtender.of(tr => {
+        if (!tr.docChanged) return null
+        console.log(tr.newDoc.toString())
+        return null
+      })
 
     return (
         <div>
@@ -184,9 +187,8 @@ export const CodeEditor: React.FC = () => {
             {socket && version != null ? (
                 <div style={{ fontSize: `${fontSize}px` }}>
                     <CodeMirror
-                        value={doc}
-                        onChange={handleOnChange}
-                        extensions={[getLangExtension(language), peerExtension(socket, version)]}
+                        value={value}
+                        extensions={[getLangExtension(language), peerExtension(socket, version), sendChanges]}
                         theme={vscodeDarkInit({
                             settings: {
                                 background: '#242424',
