@@ -1,8 +1,6 @@
-import CodeMirror, {useCodeMirror} from '@uiw/react-codemirror'
 import 'quill/dist/quill.snow.css'
 import {EditorState, Compartment} from "@codemirror/state"
-import {EditorView} from "@codemirror/view"
-
+import {basicSetup, EditorView} from "codemirror"
 import { Error, Fullscreen, Restore, ZoomIn, ZoomOut } from '@mui/icons-material'
 import { Tooltip } from '@mui/material'
 import { vscodeDarkInit } from '@uiw/codemirror-theme-vscode'
@@ -46,7 +44,8 @@ export const CodeEditor: React.FC = () => {
                     peerExtension(socket, version),
                     EditorView.updateListener.of(({ state }) => {
                         setDoc(state.doc.toString())
-                      })
+                      }),
+                    basicSetup,
                 ],
         }),
             parent: ref.current
@@ -115,12 +114,6 @@ export const CodeEditor: React.FC = () => {
             }
         }
     }
-
-    const sendChanges = EditorState.transactionExtender.of(tr => {
-        if (!tr.docChanged) return null
-        console.log(tr.newDoc.toString())
-        return null
-      })
 
     return (
         <div>
