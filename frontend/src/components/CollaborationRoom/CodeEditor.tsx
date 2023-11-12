@@ -1,6 +1,7 @@
 import CodeMirror, {useCodeMirror} from '@uiw/react-codemirror'
 import 'quill/dist/quill.snow.css'
 import {EditorState, Compartment} from "@codemirror/state"
+import {EditorView} from "@codemirror/view"
 
 import { Error, Fullscreen, Restore, ZoomIn, ZoomOut } from '@mui/icons-material'
 import { Tooltip } from '@mui/material'
@@ -18,13 +19,42 @@ export const CodeEditor: React.FC = () => {
     const { roomId } = useParams()
     const [socket, setSocket] = useState<Socket | null>(null)
     const [doc, setDoc] = useDocStore(useShallow((state) => [state.doc, state.setDoc]))
-    const [value, setValue] = useState('')
     const [version, setVersion] = useState<number | null>(null)
     const [showResetConfirmation, setShowResetConfirmation] = useState(false)
     const [fontSize, setFontSize] = useState(14) // Default font size for the editor
     const language = useLanguage((state) => state.language)
 
+    const ref = useRef()
+
+
+    // theme: vscodeDarkInit({
+    //     settings: {
+    //         background: '#242424',
+    //         gutterBackground: '#242424',
+    //         lineHighlight: 'transparent',
+    //     }
+    // }),
+    // height: 'auto',
+
+    useEffect (() => {
+        if (socket == null || version == null) return
+        new EditorView({
+            state: EditorState.create({
+                doc: doc,
+                extensions: [
+                    getLangExtension(language),
+                    peerExtension(socket, version),
+                    EditorView.updateListener.of(({ state }) => {
+                        setDoc(state.doc.toString())
+                      })
+                ],
+        }),
+            parent: ref.current
+        })
+    }, [socket, version])
+
     useEffect(() => {
+
         const socket = io('http://localhost:8004', {
             path: `/room`,
         })
@@ -45,7 +75,7 @@ export const CodeEditor: React.FC = () => {
         const fetchDoc = async () => {
             const { version, doc } = await getDocument(socket)
             setVersion(version)
-            setValue(doc.toString())
+            setDoc(doc.toString())
         }
 
         socket.on('connect', () => {
@@ -184,22 +214,10 @@ export const CodeEditor: React.FC = () => {
                     </Tooltip>
                 </div>
             </div>
-            {socket && version != null ? (
+
                 <div style={{ fontSize: `${fontSize}px` }}>
-                    <CodeMirror
-                        value={value}
-                        extensions={[getLangExtension(language), peerExtension(socket, version), sendChanges]}
-                        theme={vscodeDarkInit({
-                            settings: {
-                                background: '#242424',
-                                gutterBackground: '#242424',
-                                lineHighlight: 'transparent',
-                            },
-                        })}
-                        height='auto'
-                    />
+                    <div ref={ref} />
                 </div>
-            ) : null}
         </div>
     )
 }
