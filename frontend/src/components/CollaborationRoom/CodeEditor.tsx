@@ -6,7 +6,7 @@ import { Tooltip } from '@mui/material'
 
 import {basicDark} from 'cm6-theme-basic-dark'
 import {solarizedDark} from 'cm6-theme-solarized-dark'
-import { vscodeDarkInit } from '@uiw/codemirror-theme-vscode'
+
 import { AnimatePresence, motion } from 'framer-motion'
 import React, { useEffect, useState, useRef } from 'react'
 import { useParams } from 'react-router'
@@ -15,6 +15,8 @@ import { useShallow } from 'zustand/react/shallow'
 import { getDocument, getLangExtension, peerExtension } from '../../api/codeEditor.ts'
 import { useDocStore, useLanguage } from '../../stores/codeStore'
 import LanguageSelect from './LanguageSelect.tsx'
+import {HighlightStyle, syntaxHighlighting} from "@codemirror/language"
+import {tags} from "@lezer/highlight"
 
 export const CodeEditor: React.FC = () => {
     const { roomId } = useParams()
@@ -26,6 +28,13 @@ export const CodeEditor: React.FC = () => {
     const language = useLanguage((state) => state.language)
     const [editorView, setEditorView] = useState<EditorView | null>(null)
     const ref = useRef()
+
+    // define colors for syntax here
+    const myHighlightStyle = HighlightStyle.define([
+        {tag: tags.keyword, color: "#fc6"},
+        {tag: tags.comment, color: "#000", fontStyle: "italic"}
+      ])
+
 
     useEffect (() => {
         if (socket == null || version == null) return
@@ -39,7 +48,8 @@ export const CodeEditor: React.FC = () => {
                         setDoc(state.doc.toString())
                     }),
                     basicSetup,
-                    basicDark
+                    syntaxHighlighting(myHighlightStyle),
+                    basicDark // uncomment this line to see how theme is applied
                 ],
         }),
             parent: ref.current
@@ -57,7 +67,8 @@ export const CodeEditor: React.FC = () => {
                         setDoc(state.doc.toString())
                     }),
                     basicSetup,
-                    basicDark
+                    syntaxHighlighting(myHighlightStyle),
+                    basicDark // uncomment this line to see how theme is applied
                 ],
         })
         )
