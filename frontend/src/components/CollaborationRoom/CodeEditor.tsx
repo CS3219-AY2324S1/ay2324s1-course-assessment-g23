@@ -1,22 +1,21 @@
-import 'quill/dist/quill.snow.css'
-import {EditorState, Compartment} from "@codemirror/state"
-import {basicSetup, EditorView} from "codemirror"
-import { Error, Fullscreen, Restore, ZoomIn, ZoomOut } from '@mui/icons-material'
+import { EditorState } from '@codemirror/state'
+import { Error, Fullscreen, ZoomIn, ZoomOut } from '@mui/icons-material'
 import { Tooltip } from '@mui/material'
+import { EditorView, basicSetup } from 'codemirror'
+import 'quill/dist/quill.snow.css'
 
-import {basicDark} from 'cm6-theme-basic-dark'
-import {solarizedDark} from 'cm6-theme-solarized-dark'
+import { basicDark } from 'cm6-theme-basic-dark'
 
+import { HighlightStyle, syntaxHighlighting } from '@codemirror/language'
+import { tags } from '@lezer/highlight'
 import { AnimatePresence, motion } from 'framer-motion'
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router'
 import { Socket, io } from 'socket.io-client'
 import { useShallow } from 'zustand/react/shallow'
 import { getDocument, getLangExtension, peerExtension } from '../../api/codeEditor.ts'
 import { useDocStore, useLanguage } from '../../stores/codeStore'
 import LanguageSelect from './LanguageSelect.tsx'
-import {HighlightStyle, syntaxHighlighting} from "@codemirror/language"
-import {tags} from "@lezer/highlight"
 
 export const CodeEditor: React.FC = () => {
     const { roomId } = useParams()
@@ -31,34 +30,36 @@ export const CodeEditor: React.FC = () => {
 
     // define colors for syntax here
     const myHighlightStyle = HighlightStyle.define([
-        {tag: tags.keyword, color: "#fc6"},
-        {tag: tags.comment, color: "#000", fontStyle: "italic"}
-      ])
+        { tag: tags.keyword, color: '#fc6' },
+        { tag: tags.comment, color: '#000', fontStyle: 'italic' },
+    ])
 
-
-    useEffect (() => {
+    useEffect(() => {
         if (socket == null || version == null) return
-        setEditorView(new EditorView({
-            state: EditorState.create({
-                doc: doc,
-                extensions: [
-                    getLangExtension(language),
-                    peerExtension(socket, version),
-                    EditorView.updateListener.of(({ state }) => {
-                        setDoc(state.doc.toString())
-                    }),
-                    basicSetup,
-                    syntaxHighlighting(myHighlightStyle),
-                    basicDark // uncomment this line to see how theme is applied
-                ],
-        }),
-            parent: ref.current
-        }))
+        setEditorView(
+            new EditorView({
+                state: EditorState.create({
+                    doc: doc,
+                    extensions: [
+                        getLangExtension(language),
+                        peerExtension(socket, version),
+                        EditorView.updateListener.of(({ state }) => {
+                            setDoc(state.doc.toString())
+                        }),
+                        basicSetup,
+                        syntaxHighlighting(myHighlightStyle), // syntax highlighting colors
+                        basicDark, // modify theme here (dont forget to change the theme of the other copy of this code below also)
+                        // vvvvvvvvvv if changed theme, update the theme in the below block also vvvvvvvvvv
+                    ],
+                }),
+                parent: ref.current,
+            })
+        )
     }, [socket, version])
 
     useEffect(() => {
         editorView?.setState(
-        EditorState.create({
+            EditorState.create({
                 doc: doc,
                 extensions: [
                     getLangExtension(language),
@@ -67,15 +68,14 @@ export const CodeEditor: React.FC = () => {
                         setDoc(state.doc.toString())
                     }),
                     basicSetup,
-                    syntaxHighlighting(myHighlightStyle),
-                    basicDark // uncomment this line to see how theme is applied
+                    syntaxHighlighting(myHighlightStyle), //update here if themes updated above
+                    basicDark,
                 ],
-        })
+            })
         )
     }, [language])
 
     useEffect(() => {
-
         const socket = io('http://localhost:8004', {
             path: `/room`,
         })
@@ -121,7 +121,6 @@ export const CodeEditor: React.FC = () => {
     const zoomOut = () => {
         setFontSize((prevFontSize) => Math.max(prevFontSize - 4, 16)) // Prevents font size from going below 4px
     }
-
 
     function toggleFullScreen() {
         if (!document.fullscreenElement) {
@@ -230,9 +229,9 @@ export const CodeEditor: React.FC = () => {
                 </div>
             </div>
 
-                <div style={{ fontSize: `${fontSize}px` }}>
-                    <div ref={ref} />
-                </div>
+            <div style={{ fontSize: `${fontSize}px` }}>
+                <div ref={ref} />
+            </div>
         </div>
     )
 }
