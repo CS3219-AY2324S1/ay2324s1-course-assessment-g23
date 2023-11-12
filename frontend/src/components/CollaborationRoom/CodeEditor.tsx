@@ -55,6 +55,22 @@ export const CodeEditor: React.FC = () => {
     }, [socket, version])
 
     useEffect(() => {
+        editorView?.setState(
+   EditorState.create({
+                doc: doc,
+                extensions: [
+                    getLangExtension(language),
+                    peerExtension(socket, version),
+                    EditorView.updateListener.of(({ state }) => {
+                        setDoc(state.doc.toString())
+                    }),
+                    basicSetup,
+                ],
+        })
+        )
+    }, [language])
+
+    useEffect(() => {
 
         const socket = io('http://localhost:8004', {
             path: `/room`,
