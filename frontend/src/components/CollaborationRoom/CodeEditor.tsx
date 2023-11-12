@@ -3,6 +3,9 @@ import {EditorState, Compartment} from "@codemirror/state"
 import {basicSetup, EditorView} from "codemirror"
 import { Error, Fullscreen, Restore, ZoomIn, ZoomOut } from '@mui/icons-material'
 import { Tooltip } from '@mui/material'
+
+import {basicDark} from 'cm6-theme-basic-dark'
+import {solarizedDark} from 'cm6-theme-solarized-dark'
 import { vscodeDarkInit } from '@uiw/codemirror-theme-vscode'
 import { AnimatePresence, motion } from 'framer-motion'
 import React, { useEffect, useState, useRef } from 'react'
@@ -22,19 +25,7 @@ export const CodeEditor: React.FC = () => {
     const [fontSize, setFontSize] = useState(14) // Default font size for the editor
     const language = useLanguage((state) => state.language)
     const [editorView, setEditorView] = useState<EditorView | null>(null)
-    const [procReset, setProcReset] = useState<boolean>(false)
     const ref = useRef()
-
-
-    // theme: vscodeDarkInit({
-    //     settings: {
-    //         background: '#242424',
-    //         gutterBackground: '#242424',
-    //         lineHighlight: 'transparent',
-    //     }
-    // }),
-    // height: 'auto',
-
 
     useEffect (() => {
         if (socket == null || version == null) return
@@ -48,6 +39,7 @@ export const CodeEditor: React.FC = () => {
                         setDoc(state.doc.toString())
                     }),
                     basicSetup,
+                    basicDark
                 ],
         }),
             parent: ref.current
@@ -56,7 +48,7 @@ export const CodeEditor: React.FC = () => {
 
     useEffect(() => {
         editorView?.setState(
-   EditorState.create({
+        EditorState.create({
                 doc: doc,
                 extensions: [
                     getLangExtension(language),
@@ -65,6 +57,7 @@ export const CodeEditor: React.FC = () => {
                         setDoc(state.doc.toString())
                     }),
                     basicSetup,
+                    basicDark
                 ],
         })
         )
@@ -107,7 +100,6 @@ export const CodeEditor: React.FC = () => {
     }, [socket])
 
     const resetCode = () => {
-        setProcReset(true)
         setShowResetConfirmation(false)
     }
 
