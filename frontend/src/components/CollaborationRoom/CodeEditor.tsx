@@ -21,7 +21,8 @@ export const CodeEditor: React.FC = () => {
     const [showResetConfirmation, setShowResetConfirmation] = useState(false)
     const [fontSize, setFontSize] = useState(14) // Default font size for the editor
     const language = useLanguage((state) => state.language)
-
+    const [editorView, setEditorView] = useState<EditorView | null>(null)
+    const [procReset, setProcReset] = useState<boolean>(false)
     const ref = useRef()
 
 
@@ -34,9 +35,10 @@ export const CodeEditor: React.FC = () => {
     // }),
     // height: 'auto',
 
+
     useEffect (() => {
         if (socket == null || version == null) return
-        new EditorView({
+        setEditorView(new EditorView({
             state: EditorState.create({
                 doc: doc,
                 extensions: [
@@ -44,12 +46,12 @@ export const CodeEditor: React.FC = () => {
                     peerExtension(socket, version),
                     EditorView.updateListener.of(({ state }) => {
                         setDoc(state.doc.toString())
-                      }),
+                    }),
                     basicSetup,
                 ],
         }),
             parent: ref.current
-        })
+        }))
     }, [socket, version])
 
     useEffect(() => {
@@ -89,6 +91,7 @@ export const CodeEditor: React.FC = () => {
     }, [socket])
 
     const resetCode = () => {
+        setProcReset(true)
         setShowResetConfirmation(false)
     }
 
@@ -167,7 +170,7 @@ export const CodeEditor: React.FC = () => {
                             <ZoomIn />
                         </div>
                     </Tooltip>
-                    <Tooltip
+                    {/* <Tooltip
                         title='Reset code'
                         placement='bottom'
                         componentsProps={{
@@ -185,7 +188,7 @@ export const CodeEditor: React.FC = () => {
                         <div className='reset-icon' onClick={() => setShowResetConfirmation(true)}>
                             <Restore />
                         </div>
-                    </Tooltip>
+                    </Tooltip> */}
                     <Tooltip
                         title='Enter fullscreen mode'
                         placement='bottom'
