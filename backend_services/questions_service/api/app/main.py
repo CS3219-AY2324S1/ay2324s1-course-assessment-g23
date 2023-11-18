@@ -15,6 +15,7 @@ from shared_definitions.auth.fastapi_dependencies import (
     require_logged_in,
     require_maintainer_role,
 )
+from apscheduler.schedulers.background import BackgroundScheduler
 
 # create app
 app = FastAPI(dependencies=[Depends(require_logged_in)])
@@ -32,6 +33,18 @@ app.add_middleware(
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(*args):
     return await stringify_exception_handler(*args)
+
+scheduler = BackgroundScheduler()
+
+@app.on_event("startup")
+async def schedule_jobs():
+    scheduler.add_job(qc.import_leetcode_data, 'interval', minutes=20)
+    scheduler.start()
+    await qc.import_leetcode_data()
+
+@app.on_event("shutdown")
+async def shutdown_scheduler():
+    scheduler.shutdown()
 
 
 @app.post(

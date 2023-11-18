@@ -10,6 +10,26 @@ from shared_definitions.api_models.questions import (
 )
 from utils import questions_util
 
+import httpx
+
+async def import_leetcode_data():
+    SERVERLESS_URL = "http://asia-southeast1-peerprep-403309.cloudfunctions.net/g23-leetcode-scraper"
+    
+    async with httpx.AsyncClient(timeout=httpx.Timeout(120.0, connect=120.0)) as client:
+        response = await client.get(SERVERLESS_URL)
+        questions = response.json()
+
+        for question in questions:
+            try:
+                create_question(
+                    title=question["title"],
+                    description=question["description"],
+                    category="Leetcode",
+                    complexity="Easy",
+                )
+            except:
+                pass
+
 
 def create_question(
     title: str,
