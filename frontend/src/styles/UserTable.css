@@ -1,0 +1,42 @@
+.user-container {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 60rem;
+}
+
+.user-container td {
+    padding: 0.5rem 1rem;
+}
+
+.user-container th {
+    padding: 0 2rem 0.5rem 1rem;
+    text-align: left;
+    min-width: 7rem;
+    border-bottom: 2px solid #303030;
+}
+
+.user-container input {
+    padding: 0.5rem 0rem 0.5rem 0.5rem;
+    width: 100%;
+}
+
+.userForm input {
+    width: 10rem;
+}
+
+.user-container select {
+    padding: 0.55rem;
+}
+
+.user-table tbody tr:nth-child(even) {
+    background-color: #303030;
+}
+
+.user-table tbody tr:nth-child(odd) {
+    background-color: #242424;
+}
+
+.user-table {
+    border-collapse: collapse;
+    width: 100%;
+}

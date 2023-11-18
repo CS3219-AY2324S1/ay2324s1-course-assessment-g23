@@ -1,0 +1,19 @@
+{
+  "name": "collab_editor_service",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc -p ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@codemirror/collab": "^6.1.1",
+    "http": "^0.0.1-security",
+    "socket.io": "^4.7.2",
+    "typescript": "^5.2.2"
+  }
+}

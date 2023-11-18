@@ -1,0 +1,112 @@
+.question-list-container {
+    background-color: #242424;
+    height: 100vh;
+    width: 550px;
+    display: flex;
+    flex-direction: column;
+    margin-right: auto;
+    padding: 0 0 50px 0;
+    overflow: scroll;
+    font-size: 14px;
+    z-index: 3;
+}
+
+.question-list-container h2 {
+    margin: 0;
+}
+
+.question-list-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    border-bottom: 2px solid #3d3d3d;
+    padding: 30px 20px;
+}
+
+.sort-filter-tab {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px 0 20px;
+}
+
+.search-box {
+    height: 30px;
+    width: 100%;
+    border-radius: 5px;
+    border-style: none;
+    background-color: #3d3d3d;
+    padding: 0 5px;
+}
+
+.search-box:focus {
+    outline: none;
+}
+
+.question-list {
+    margin: 20px;
+    padding: 0;
+    list-style-type: none;
+}
+
+.question-list li {
+    border: 2px solid #303030;
+    border-bottom: none;
+    padding: 10px 20px;
+    height: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.question-list li:hover {
+    cursor: pointer;
+    background-color: #2b2b2b;
+}
+
+.question-list li:first-child {
+    border-radius: 5px 5px 0 0;
+}
+
+.question-list li:last-child {
+    border-bottom: 2px solid #303030;
+    border-radius: 0 0 5px 5px;
+}
+
+.question-list p {
+    margin: 0;
+}
+
+.question-row-selected {
+    background-color: #303030;
+    color: #646cff;
+    pointer-events: none;
+}
+
+.ql-reset-row {
+    height: auto;
+    display: flex;
+    padding: 0 20px;
+    gap: 10px;
+}
+
+.back-to-top {
+    width: auto;
+    margin-left: auto;
+    margin-right: 20px;
+    background-color: transparent;
+    color: #c2c2c2;
+    padding: 5px 10px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 5px;
+    font-size: 15px;
+}
+
+.back-to-top:hover {
+    background-color: #3d3d3d;
+}

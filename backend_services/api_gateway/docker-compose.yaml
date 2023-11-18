@@ -1,0 +1,50 @@
+version: "3"
+
+services:
+  api_gateway:
+    container_name: api_gateway
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - NGINX_DEV_USERNAME=${NGINX_DEV_USERNAME:-admin}
+        - NGINX_DEV_PASSWORD=${NGINX_DEV_PASSWORD:-password}
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.${ENV_TYPE:-dev}.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx_params_handle_websockets:/etc/nginx/nginx_params_handle_websockets:ro
+      - nginx_logs:/var/log/nginx
+      - goaccess_data:/var/www/goaccess
+      - frontend_dist:/www/data
+    depends_on:
+      - users_api
+      - questions_api
+      - matching_api
+      - collaboration_api
+      - communication_api
+      - code_execution_api
+      - traffic_monitor
+    networks:
+      - client-side
+      - backend-apis
+      - monitor_net
+
+  traffic_monitor:
+    container_name: traffic_monitor
+    image: allinurl/goaccess:latest
+    volumes:
+      - ./goaccess.${ENV_TYPE:-dev}.conf:/etc/goaccess/goaccess.conf:ro
+      - nginx_logs:/var/log/nginx
+      - goaccess_data:/var/www/goaccess
+    command: ["--config-file=/etc/goaccess/goaccess.conf"]
+    networks:
+      - monitor_net
+
+volumes:
+  nginx_logs:
+    external: true
+  goaccess_data:
+
+networks:
+  monitor_net:
